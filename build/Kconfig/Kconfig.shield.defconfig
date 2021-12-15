@@ -1,0 +1,3 @@
+osource "d:/VSCodeNCS/phyphox-Satellite/boards/shields/*/Kconfig.defconfig"
+osource "D:/VSCodeNCS/phyphox-Satellite/boards/shields/*/Kconfig.defconfig"
+osource "C:/Users/Dominik/ncs/v1.7.1/nrf/boards/shields/*/Kconfig.defconfig"

@@ -1,0 +1,3 @@
+"BOARD_ROOT":"C:/Users/Dominik/ncs/v1.7.1/nrf"
+"DTS_ROOT":"C:/Users/Dominik/ncs/v1.7.1/nrf"
+"MODULE_EXT_ROOT":"C:/Users/Dominik/ncs/v1.7.1/nrf"

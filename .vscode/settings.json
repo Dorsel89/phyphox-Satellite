@@ -1,0 +1,18 @@
+{
+  "nrf-connect.topdir": "c:\\Users\\Dominik\\ncs\\v1.7.1",
+  "nrf-connect.toolchain.path": "c:\\Users\\Dominik\\ncs\\v1.7.1\\toolchain",
+  "nrf-connect.applications": [
+    "d:\\VSCodeNCS\\phyphox-Satellite"
+  ],
+  "files.associations": {
+    "types.h": "c",
+    "i2c.h": "c",
+    "bmpzephyr.h": "c",
+    "cstddef": "c",
+    "bas.h": "c",
+    "workqueue.h": "c"
+  },
+  "nrf-connect.boardRoots": [
+    "${workspaceFolder}"
+  ]
+}
