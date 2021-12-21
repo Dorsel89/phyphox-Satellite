@@ -2,6 +2,8 @@
 
 BMP bmpData;
 MLX mlxData;
+IMU imuData;
+
 /*
 BMP bmpData = {
     .config = {0},

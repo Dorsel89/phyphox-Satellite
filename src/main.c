@@ -16,6 +16,8 @@
 #include "ble.h"
 #include "mlxZephyr.h"
 #include "phyphox.h"
+#include "icm42605.h"
+#include "shtc3.h"
 
 //#include "debug.h"
 #define SLEEP_TIME_MS	1
@@ -31,7 +33,7 @@ void btn1_handle(struct k_work * work) {
 
 void main(void)
 {
-	printk("Hello World!!! %s\n", CONFIG_BOARD);
+	printk("Hello World %s\n", CONFIG_BOARD);
 
 	uint16_t counter =0;
 	
@@ -51,15 +53,13 @@ void main(void)
 	initMLX(i2c_dev);
 	init_Interrupt_MLX();
 	k_sleep(K_SECONDS(1));
-	enableMLX(i2c_dev);
+	//enableMLX(i2c_dev);
 	
 	initBLE();
-		
-	while (1)
-	{
-		k_sleep(K_SECONDS(2));
-	
-	}
-	
-
+	printk("start imu\n");
+	initIMU(i2c_dev,AFS_2G, GFS_15_125DPS, AODR_25Hz, GODR_25Hz);
+	setState(0,0); //disable 0,0 enable 1,1
+	k_sleep(K_SECONDS(3));
+	//printk("start shtc\n");
+	//initSHTC(i2c_dev);
 }

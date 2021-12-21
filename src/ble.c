@@ -43,21 +43,46 @@ static ssize_t dataWritten(struct bt_conn *conn, const struct bt_gatt_attr *attr
 	return len;
 }
 
+static const struct bt_le_adv_param adv_param_normal = {
+	.options = BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_USE_NAME,
+	.interval_min = BT_GAP_ADV_SLOW_INT_MIN,
+	.interval_max = BT_GAP_ADV_SLOW_INT_MAX,
+};
+
 BT_GATT_SERVICE_DEFINE(phyphoxGATT, 
 	BT_GATT_PRIMARY_SERVICE(&data_service_uuid),
-	//ICM42605S
-	BT_GATT_CHARACTERISTIC(&bmp_uuid,
+	//BMP384 
+	BT_GATT_CHARACTERISTIC(&bmp_uuid,					
 			       BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
 			       BT_GATT_PERM_READ,
-			       read_u16, NULL, &bmpData.pressure),
+			       read_u16, NULL, &bmpData.pressure),	//this value part is strange, @edward should we swap to byte array??
 	BT_GATT_CCC(ccc_cfg_changed,
 		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
-    BT_GATT_CHARACTERISTIC(&bmp_cnfg,
+    BT_GATT_CHARACTERISTIC(&bmp_cnfg,					
 			       BT_GATT_CHRC_WRITE | BT_GATT_CHRC_NOTIFY,
 			       BT_GATT_PERM_WRITE,
 			       NULL, dataWritten, &bmpData.config[0]),
 	BT_GATT_CCC(bmp_config_notification,	//notification handler
-		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE)
+		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+	//ICM42605 
+	BT_GATT_CHARACTERISTIC(&icm_uuid_acc,				
+			       BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+			       BT_GATT_PERM_READ,
+			       read_u16, NULL, &imuData.ax),
+	BT_GATT_CCC(ccc_cfg_changed,
+		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+	BT_GATT_CHARACTERISTIC(&icm_uuid_gyr,				
+			       BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+			       BT_GATT_PERM_READ,
+			       read_u16, NULL, &imuData.gx),
+	BT_GATT_CCC(ccc_cfg_changed,
+		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+	BT_GATT_CHARACTERISTIC(&icm_cnfg,					
+			       BT_GATT_CHRC_WRITE | BT_GATT_CHRC_NOTIFY,
+			       BT_GATT_PERM_WRITE,
+			       NULL, write_u16, &imuData.config[0]),
+	BT_GATT_CCC(imu_config_notification,
+		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE)			
 );
 static const struct bt_data ad[] = {
 	BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
@@ -69,8 +94,17 @@ static const struct bt_data ad[] = {
 		//BT_UUID_128_ENCODE(0xcddf1002, 0x30f7, 0x4671, 0x8b43, 0x5e40ba53514a), 
 		//BT_UUID_128_ENCODE(0xcddf1003, 0x30f7, 0x4671, 0x8b43, 0x5e40ba53514a))
 };
+
+static const struct bt_le_conn_param conn_paramter = {
+	.interval_min = 6,
+	.interval_max = 12,
+	.latency = 0,
+	.timeout = 10
+};
+
 static void connected(struct bt_conn *conn, uint8_t err)
 {
+	bt_conn_le_param_update(conn,&conn_paramter);
 	if (err) {
 		printk("Connection failed (err 0x%02x)\n", err);
 	} else {
@@ -81,6 +115,7 @@ static void connected(struct bt_conn *conn, uint8_t err)
 static void disconnected(struct bt_conn *conn, uint8_t reason)
 {
 	printk("Disconnected (reason 0x%02x)\n", reason);
+	sleepBMP(1);
 }
 
 static struct bt_conn_cb conn_callbacks = {
@@ -93,7 +128,8 @@ static void bt_ready(void)
 
 	printk("Bluetooth initialized\n");
 
-	err = bt_le_adv_start(BT_LE_ADV_CONN_NAME, ad, ARRAY_SIZE(ad), NULL, 0);
+
+	err = bt_le_adv_start(&adv_param_normal, ad, ARRAY_SIZE(ad), NULL, 0);
 	if (err) {
 		printk("Advertising failed to start (err %d)\n", err);
 		return;
@@ -136,5 +172,16 @@ extern void initBLE(){
 
 
 extern void sendData(uint8_t ID, float* DATA,uint8_t LEN){
-	bt_gatt_notify(NULL, &phyphoxGATT.attrs[ID], DATA, LEN);
+	if(ID == SENSOR_IMU_ACC_ID){
+		bt_gatt_notify_uuid(NULL, &icm_uuid_acc.uuid,&phyphoxGATT.attrs[0],DATA,LEN);
+		return;
+	}
+	if(ID == SENSOR_IMU_GYR_ID){
+		bt_gatt_notify_uuid(NULL, &icm_uuid_gyr.uuid,&phyphoxGATT.attrs[0],DATA,LEN);
+		return;
+	}
+	if(ID == SENSOR_BMP384_ID){
+		bt_gatt_notify_uuid(NULL, &bmp_uuid.uuid,&phyphoxGATT.attrs[0],DATA,LEN);
+		return;
+	}	
 };

@@ -51,9 +51,9 @@ D:/VSCodeNCS/phyphox-Satellite/build/zephyr/lib/CMakeFiles/edit_cache.dir
 D:/VSCodeNCS/phyphox-Satellite/build/zephyr/lib/CMakeFiles/rebuild_cache.dir
 D:/VSCodeNCS/phyphox-Satellite/build/zephyr/lib/libc/CMakeFiles/edit_cache.dir
 D:/VSCodeNCS/phyphox-Satellite/build/zephyr/lib/libc/CMakeFiles/rebuild_cache.dir
-D:/VSCodeNCS/phyphox-Satellite/build/zephyr/lib/libc/minimal/CMakeFiles/lib__libc__minimal.dir
-D:/VSCodeNCS/phyphox-Satellite/build/zephyr/lib/libc/minimal/CMakeFiles/edit_cache.dir
-D:/VSCodeNCS/phyphox-Satellite/build/zephyr/lib/libc/minimal/CMakeFiles/rebuild_cache.dir
+D:/VSCodeNCS/phyphox-Satellite/build/zephyr/lib/libc/newlib/CMakeFiles/lib__libc__newlib.dir
+D:/VSCodeNCS/phyphox-Satellite/build/zephyr/lib/libc/newlib/CMakeFiles/edit_cache.dir
+D:/VSCodeNCS/phyphox-Satellite/build/zephyr/lib/libc/newlib/CMakeFiles/rebuild_cache.dir
 D:/VSCodeNCS/phyphox-Satellite/build/zephyr/lib/posix/CMakeFiles/lib__posix.dir
 D:/VSCodeNCS/phyphox-Satellite/build/zephyr/lib/posix/CMakeFiles/edit_cache.dir
 D:/VSCodeNCS/phyphox-Satellite/build/zephyr/lib/posix/CMakeFiles/rebuild_cache.dir
@@ -158,9 +158,6 @@ D:/VSCodeNCS/phyphox-Satellite/build/zephyr/drivers/sensor/grove/CMakeFiles/rebu
 D:/VSCodeNCS/phyphox-Satellite/build/zephyr/drivers/sensor/nrf5/CMakeFiles/drivers__sensor__nrf5.dir
 D:/VSCodeNCS/phyphox-Satellite/build/zephyr/drivers/sensor/nrf5/CMakeFiles/edit_cache.dir
 D:/VSCodeNCS/phyphox-Satellite/build/zephyr/drivers/sensor/nrf5/CMakeFiles/rebuild_cache.dir
-D:/VSCodeNCS/phyphox-Satellite/build/zephyr/drivers/serial/CMakeFiles/drivers__serial.dir
-D:/VSCodeNCS/phyphox-Satellite/build/zephyr/drivers/serial/CMakeFiles/edit_cache.dir
-D:/VSCodeNCS/phyphox-Satellite/build/zephyr/drivers/serial/CMakeFiles/rebuild_cache.dir
 D:/VSCodeNCS/phyphox-Satellite/build/zephyr/drivers/bluetooth/CMakeFiles/edit_cache.dir
 D:/VSCodeNCS/phyphox-Satellite/build/zephyr/drivers/bluetooth/CMakeFiles/rebuild_cache.dir
 D:/VSCodeNCS/phyphox-Satellite/build/zephyr/drivers/bluetooth/hci/CMakeFiles/edit_cache.dir

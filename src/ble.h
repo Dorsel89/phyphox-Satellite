@@ -10,6 +10,7 @@
 #include <bluetooth/services/bas.h>
 #include "workQueue.h"
 #include <sys/byteorder.h>
+#include "bmpZephyr.h"
 
 /* Bluetooth Display Names */
 #define SENSOR_BMP384_NAME			"BMP384 Umgebungssensor"
@@ -69,6 +70,11 @@ extern void sendData(uint8_t, float* ,uint8_t);
 
 static void bmp_config_notification(const struct bt_gatt_attr *attr,uint8_t value)
 {
-	printk("config set");
+	printk("config bmp set");
 }
+static void imu_config_notification(const struct bt_gatt_attr *attr,uint8_t value)
+{
+	printk("config imu set");
+}
+
 #endif

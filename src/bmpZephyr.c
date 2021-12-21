@@ -118,7 +118,7 @@ int8_t init_Interrupt_BMP(){
 extern void submitConfigBMP(){
 	k_work_submit(&work_config);
 };
-static uint8_t sleepBMP(bool SLEEP){
+extern uint8_t sleepBMP(bool SLEEP){
 	if(SLEEP){
 		bmp388_dev.settings.op_mode = BMP3_MODE_SLEEP;
 		return bmp3_set_op_mode(&bmp388_dev);
@@ -159,6 +159,8 @@ static void setConfigBMP(){
             /* Temperature and Pressure data are read and stored in the bmp3_data instance */
         }
     }
+	
+	k_sleep(K_MSEC(100));
 	sleepBMP(!bmpData.config[0]);
 }
 

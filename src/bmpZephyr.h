@@ -7,6 +7,7 @@
 #include <drivers/i2c.h>
 #include <drivers/gpio.h>
 #include "workQueue.h"
+#include "zephyr.h"
 #include "phyphox.h"
 
 #include "ble.h"
@@ -27,5 +28,5 @@ static uint8_t sensor_comp = BMP3_PRESS | BMP3_TEMP;
 static int16_t counter=0;
 
 static void setConfigBMP();
-static uint8_t sleepBMP(bool SLEEP);
+extern uint8_t sleepBMP(bool SLEEP);
 #endif

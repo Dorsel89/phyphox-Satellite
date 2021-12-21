@@ -42,7 +42,7 @@ CACHED_BOARD:STRING=phyphox_satellite
 // listed, e.g. CONF_FILE="prj1.confi;prj2.conf" The CACHED_CONF_FILE
 // is internal Zephyr variable used between CMake runs. To change
 // CONF_FILE, use the CONF_FILE variable.
-CACHED_CONF_FILE:STRING=D:/VSCodeNCS/phyphox-Satellite/prj.conf
+CACHED_CONF_FILE:STRING=d:/VSCodeNCS/phyphox-Satellite/prj.conf
 
 //Selected shield
 CACHED_SHIELD:STRING=
@@ -292,12 +292,8 @@ CMAKE_VERBOSE_MAKEFILE:BOOL=FALSE
 //Path to a program.
 DTC:FILEPATH=C:/Users/Dominik/ncs/v1.7.1/toolchain/opt/bin/dtc.exe
 
-//If desired, you can build the application using the DT configuration
-// settings specified in an alternate .overlay file using this
-// parameter. These settings will override the settings in the
-// board's .dts file. Multiple files may be listed, e.g. DTC_OVERLAY_FILE="dts1.overlay
-// dts2.overlay"
-DTC_OVERLAY_FILE:STRING=satellite.overlay
+//No help, variable specified on the command line.
+DTC_OVERLAY_FILE:STRING=d:/VSCodeNCS/phyphox-Satellite/satellite.overlay
 
 //Git command line client
 GIT_EXECUTABLE:FILEPATH=C:/Users/Dominik/ncs/v1.7.1/toolchain/mingw64/bin/git.exe
@@ -487,7 +483,7 @@ CMAKE_MODULE_LINKER_FLAGS_RELWITHDEBINFO-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_NM
 CMAKE_NM-ADVANCED:INTERNAL=1
 //number of local generators
-CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=135
+CMAKE_NUMBER_OF_MAKEFILES:INTERNAL=134
 //ADVANCED property for variable: CMAKE_OBJCOPY
 CMAKE_OBJCOPY-ADVANCED:INTERNAL=1
 //ADVANCED property for variable: CMAKE_OBJDUMP
