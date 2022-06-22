@@ -12,6 +12,8 @@
 
 #include "ble.h"
 
+extern int8_t init_Interrupt_BMP();
+
 
 #define BMP_INT DT_NODELABEL(button1)
 static struct k_work work_data;

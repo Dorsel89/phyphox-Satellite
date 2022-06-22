@@ -475,5 +475,7 @@ bool mlx_init(struct device *mlx_device) {
     return false;
   }
 
+  
+
   return true;
 }

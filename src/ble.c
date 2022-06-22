@@ -40,6 +40,9 @@ static ssize_t dataWritten(struct bt_conn *conn, const struct bt_gatt_attr *attr
 	if(attr->uuid == &bmp_cnfg.uuid){
 		submitConfigBMP();
 	}
+	if(attr->uuid == &shtc_cnfg.uuid){
+		submitConfigSHTC();
+	}
 	return len;
 }
 
@@ -55,7 +58,7 @@ BT_GATT_SERVICE_DEFINE(phyphoxGATT,
 	BT_GATT_CHARACTERISTIC(&bmp_uuid,					
 			       BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
 			       BT_GATT_PERM_READ,
-			       read_u16, NULL, &bmpData.pressure),	//this value part is strange, @edward should we swap to byte array??
+			       read_u16, NULL, &bmpData.array[0]),	//this value part is strange, @edward should we swap to byte array??
 	BT_GATT_CCC(ccc_cfg_changed,
 		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
     BT_GATT_CHARACTERISTIC(&bmp_cnfg,					
@@ -63,6 +66,32 @@ BT_GATT_SERVICE_DEFINE(phyphoxGATT,
 			       BT_GATT_PERM_WRITE,
 			       NULL, dataWritten, &bmpData.config[0]),
 	BT_GATT_CCC(bmp_config_notification,	//notification handler
+		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+	//SHTC
+	BT_GATT_CHARACTERISTIC(&shtc_uuid,					
+			       BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+			       BT_GATT_PERM_READ,
+			       read_u16, NULL, &shtcData.array[0]),
+	BT_GATT_CCC(ccc_cfg_changed,
+		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+    BT_GATT_CHARACTERISTIC(&shtc_cnfg,					
+			       BT_GATT_CHRC_WRITE | BT_GATT_CHRC_NOTIFY,
+			       BT_GATT_PERM_WRITE,
+			       NULL, dataWritten, &shtcData.config[0]),
+	BT_GATT_CCC(shtc_config_notification,	//notification handler
+		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+	//MLX
+	BT_GATT_CHARACTERISTIC(&mlx_uuid,					
+			       BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+			       BT_GATT_PERM_READ,
+			       read_u16, NULL, &mlxData.array[0]),
+	BT_GATT_CCC(ccc_cfg_changed,
+		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+    BT_GATT_CHARACTERISTIC(&mlx_cnfg,					
+			       BT_GATT_CHRC_WRITE | BT_GATT_CHRC_NOTIFY,
+			       BT_GATT_PERM_WRITE,
+			       NULL, dataWritten, &mlxData.config[0]),
+	BT_GATT_CCC(shtc_config_notification,	//notification handler
 		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
 	//ICM42605 
 	BT_GATT_CHARACTERISTIC(&icm_uuid_acc,				
@@ -82,7 +111,8 @@ BT_GATT_SERVICE_DEFINE(phyphoxGATT,
 			       BT_GATT_PERM_WRITE,
 			       NULL, write_u16, &imuData.config[0]),
 	BT_GATT_CCC(imu_config_notification,
-		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE)			
+		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE)
+				
 );
 static const struct bt_data ad[] = {
 	BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
@@ -104,18 +134,25 @@ static const struct bt_le_conn_param conn_paramter = {
 
 static void connected(struct bt_conn *conn, uint8_t err)
 {
+	printk(bt_conn_index(conn));
+	printk("\n");
+	
 	bt_conn_le_param_update(conn,&conn_paramter);
 	if (err) {
 		printk("Connection failed (err 0x%02x)\n", err);
 	} else {
 		printk("Connected\n");
 	}
+
+	blink_LED(LED_BLUE_ID,3);
 }
 
 static void disconnected(struct bt_conn *conn, uint8_t reason)
 {
 	printk("Disconnected (reason 0x%02x)\n", reason);
-	sleepBMP(1);
+	sleepBMP(true);
+	sleepSHTC(true);
+	sleepMLX(true);
 }
 
 static struct bt_conn_cb conn_callbacks = {
@@ -139,7 +176,7 @@ static void bt_ready(void)
 }
 
 /*phyphox write data into characteristic*/
-void write(float data1) {
+extern void write(float data1) {
 	float array[1] = {data1};
 	bt_gatt_notify(NULL, &phyphoxGATT.attrs[2], &array, 4);
 }
@@ -150,20 +187,36 @@ void writeMulti(float data1,float data2,float data3, float data4, float data5, u
 }
 
 /*
- *  Dummy Battery Notification
+ *  Not so Dummy Battery Notification
  */
 static void bas_notify(void)
 {
 	uint8_t battery_level = bt_bas_get_battery_level();
 
-	battery_level--;
+	battery_level = battery_level - 5U;
 
-	if (!battery_level) {
+	if (battery_level < 5U) {
+		blink_LED(LED_RED_ID,1);
 		battery_level = 100U;
 	}
 
 	bt_bas_set_battery_level(battery_level);
 }
+
+static void bas_ready(const struct device *dev, struct gpio_callback *cb,uint32_t pins)
+{
+	k_work_submit(&work_bas);
+}
+
+void init_BAS() {
+    k_work_init(&work_bas, bas_notify);
+    k_timer_init(&timer_bas, bas_ready, NULL);
+	k_timer_start(&timer_bas,K_SECONDS(1),K_SECONDS(1));
+
+    if (DEBUG_MODE){printk("init BAS\n");}
+}
+
+
 extern void initBLE(){
      bt_enable(NULL);
      bt_ready();
@@ -183,5 +236,15 @@ extern void sendData(uint8_t ID, float* DATA,uint8_t LEN){
 	if(ID == SENSOR_BMP384_ID){
 		bt_gatt_notify_uuid(NULL, &bmp_uuid.uuid,&phyphoxGATT.attrs[0],DATA,LEN);
 		return;
-	}	
+	}
+	if (ID == SENSOR_SHTC_ID)
+	{
+		bt_gatt_notify_uuid(NULL, &shtc_uuid.uuid,&phyphoxGATT.attrs[0],DATA,LEN);
+		return;
+	}
+	if (ID == SENSOR_MLX_ID)
+	{
+		bt_gatt_notify_uuid(NULL, &mlx_uuid.uuid,&phyphoxGATT.attrs[0],DATA,LEN);
+		return;
+	}
 };

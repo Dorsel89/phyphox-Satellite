@@ -3,6 +3,7 @@
 BMP bmpData;
 MLX mlxData;
 IMU imuData;
+SHTC shtcData;
 
 /*
 BMP bmpData = {

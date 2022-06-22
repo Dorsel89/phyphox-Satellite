@@ -1,0 +1,18 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"nrf-connect.applications": [
+			"${workspaceFolder}",
+			"f:\\Code\\phyphox-Satellite-main\\phyphox-Satellite-main"
+		],
+		"nrf-connect.topdir": "${nrf-connect.sdk:1.9.1}",
+		"nrf-connect.toolchain.path": "${nrf-connect.toolchain:1.9.1}",
+		"files.associations": {
+			"zephyr.h": "c"
+		}
+	}
+}

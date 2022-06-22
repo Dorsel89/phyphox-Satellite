@@ -10,12 +10,15 @@ typedef struct {
 	float y;
 	float z;
 	float timestamp;
+	float array[4];
+	uint8_t config[20];
 }MLX;
 
 typedef struct {
 	float pressure;
 	float temperature;
 	float timestamp;
+	float array[3];
 	uint8_t config[20];
 }BMP;
 
@@ -30,8 +33,18 @@ typedef struct {
 	uint8_t config[20];
 }IMU;
 
+typedef struct {
+	float humidity;
+	float temperature;
+	float timestamp;
+	float array[3];
+	uint8_t timer_interval;
+	uint8_t config[20];
+}SHTC;
+
 extern BMP bmpData;
 extern MLX mlxData;
 extern IMU imuData;
+extern SHTC shtcData;
 
 #endif

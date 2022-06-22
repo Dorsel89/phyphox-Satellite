@@ -1,0 +1,3 @@
+osource "f:/Code/phyphox-Satellite-main/phyphox-Satellite-main/boards/shields/*/Kconfig.defconfig"
+osource "F:/Code/phyphox-Satellite-main/phyphox-Satellite-main/boards/shields/*/Kconfig.defconfig"
+osource "C:/Users/edwar/ncs/v1.9.1/nrf/boards/shields/*/Kconfig.defconfig"
