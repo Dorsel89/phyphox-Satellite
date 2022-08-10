@@ -25,8 +25,8 @@ static void mlx_int1_triggered(const struct device *dev, struct gpio_callback *c
 extern void printMLX(){
     float x,y,z;
     mlx_readMeasurement(&mlxData.x,&mlxData.y,&mlxData.z,mlxdev);
-	if(PRINT_SENSOR_DATA){
-    	//printk("MLX: x: %f y: %f z: %f \n",mlxData.x,mlxData.y,mlxData.z);
+	if(1){
+    	printk("MLX: x: %f y: %f z: %f \n",mlxData.x,mlxData.y,mlxData.z);
 	}
 }
 

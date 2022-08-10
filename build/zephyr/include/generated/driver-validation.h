@@ -8,11 +8,15 @@
 
 #define Z_SYSCALL_DRIVER_ADC(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, adc, ADC)
 
+#define Z_SYSCALL_DRIVER_BBRAM(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, bbram, BBRAM)
+
 #define Z_SYSCALL_DRIVER_CAN(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, can, CAN)
 
 #define Z_SYSCALL_DRIVER_COUNTER(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, counter, COUNTER)
 
 #define Z_SYSCALL_DRIVER_DAC(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, dac, DAC)
+
+#define Z_SYSCALL_DRIVER_DAI(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, dai, DAI)
 
 #define Z_SYSCALL_DRIVER_DMA(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, dma, DMA)
 
@@ -30,6 +34,8 @@
 
 #define Z_SYSCALL_DRIVER_FLASH(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, flash, FLASH)
 
+#define Z_SYSCALL_DRIVER_FPGA(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, fpga, FPGA)
+
 #define Z_SYSCALL_DRIVER_GPIO(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, gpio, GPIO)
 
 #define Z_SYSCALL_DRIVER_I2C(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, i2c, I2C)
@@ -42,6 +48,10 @@
 
 #define Z_SYSCALL_DRIVER_LED(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, led, LED)
 
+#define Z_SYSCALL_DRIVER_MBOX(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, mbox, MBOX)
+
+#define Z_SYSCALL_DRIVER_MDIO(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, mdio, MDIO)
+
 #define Z_SYSCALL_DRIVER_PINMUX(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, pinmux, PINMUX)
 
 #define Z_SYSCALL_DRIVER_PS2(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, ps2, PS2)
@@ -52,15 +62,29 @@
 
 #define Z_SYSCALL_DRIVER_REGULATOR(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, regulator, REGULATOR)
 
+#define Z_SYSCALL_DRIVER_RESET(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, reset, RESET)
+
 #define Z_SYSCALL_DRIVER_SENSOR(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, sensor, SENSOR)
 
 #define Z_SYSCALL_DRIVER_SPI(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, spi, SPI)
+
+#define Z_SYSCALL_DRIVER_SYSCON(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, syscon, SYSCON)
 
 #define Z_SYSCALL_DRIVER_UART(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, uart, UART)
 
 #define Z_SYSCALL_DRIVER_WDT(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, wdt, WDT)
 
+#define Z_SYSCALL_DRIVER_CAN_TRANSCEIVER(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, can_transceiver, CAN_TRANSCEIVER)
+
 #define Z_SYSCALL_DRIVER_UART_MUX(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, uart_mux, UART_MUX)
 
+#define Z_SYSCALL_DRIVER_ITS(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, its, ITS)
+
+#define Z_SYSCALL_DRIVER_PCIE_CTRL(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, pcie_ctrl, PCIE_CTRL)
+
+#define Z_SYSCALL_DRIVER_TCPC(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, tcpc, TCPC)
+
 #define Z_SYSCALL_DRIVER_IVSHMEM(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, ivshmem, IVSHMEM)
+
+#define Z_SYSCALL_DRIVER_ETHPHY(ptr, op) Z_SYSCALL_DRIVER_GEN(ptr, op, ethphy, ETHPHY)
 #endif /* DRIVER_VALIDATION_GEN_H */

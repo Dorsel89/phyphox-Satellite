@@ -37,10 +37,10 @@
  
 	 buttons {
 		 compatible = "gpio-keys";
-		 button0: button_0 {	//20 1wire 
-			 gpios = <&gpio0 20 (GPIO_ACTIVE_HIGH)>;
-			 label = "1wire";
-		 };
+//		 button0: button_0 {	//20 1wire 
+//			 gpios = <&gpio0 20 (GPIO_ACTIVE_HIGH)>;
+//			 label = "1wire";
+//		 };
 		 button1: button_1 { // 17 bmp
 			 gpios = <&gpio0 17 (GPIO_ACTIVE_HIGH)>;
 			 label = "bmp data ready";

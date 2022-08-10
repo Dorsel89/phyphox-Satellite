@@ -5,17 +5,7 @@ MEMORY
     FLASH (rx) : ORIGIN = (0x0 + 0x0), LENGTH = (1024*1K - 0x0)
     SRAM (wx) : ORIGIN = 0x20000000, LENGTH = (256 * 1K)
    
-   
-   
-   
-   
-   
-   
-   
-   
-   
-   
-    IDT_LIST (wx) : ORIGIN = (0x20000000 + (256 * 1K)), LENGTH = 2K
+    IDT_LIST (wx) : ORIGIN = 0xFFFFF7FF, LENGTH = 2K
     }
 ENTRY("__start")
 SECTIONS
@@ -51,13 +41,13 @@ SECTIONS
  *(.iplt)
  }
    
- _image_rom_start = (0x0 + 0x0);
+ __rom_region_start = (0x0 + 0x0);
     rom_start :
  {
 . = 0x0;
 . = ALIGN(4);
-. = ALIGN( 1 << LOG2CEIL(4 * 32) );
-. = ALIGN( 1 << LOG2CEIL(4 * (16 + 48)) );
+. = ALIGN( 1 << ((((4 * 32) <= 4) ? 2 : (((4 * 32) <= 8) ? 3 : (((4 * 32) <= 16) ? 4 : (((4 * 32) <= 32) ? 5 : (((4 * 32) <= 64) ? 6 : (((4 * 32) <= 128) ? 7 : (((4 * 32) <= 256) ? 8 : (((4 * 32) <= 512) ? 9 : (((4 * 32) <= 1024) ? 10 : (((4 * 32) <= 2048) ? 11 : (((4 * 32) <= 4096) ? 12 : (((4 * 32) <= 8192) ? 13 : (((4 * 32) <= 16384) ? 14 : (((4 * 32) <= 32768) ? 15:(((4 * 32) <= 65536) ? 16 : (((4 * 32) <= 131072) ? 17 : (((4 * 32) <= 262144) ? 18:(((4 * 32) <= 524288) ? 19 : (((4 * 32) <= 1048576) ? 20 : (((4 * 32) <= 2097152) ? 21 : (((4 * 32) <= 4194304) ? 22 : (((4 * 32) <= 8388608) ? 23 : (((4 * 32) <= 16777216) ? 24 : (((4 * 32) <= 33554432) ? 25 : (((4 * 32) <= 67108864) ? 26 : (((4 * 32) <= 134217728) ? 27 : (((4 * 32) <= 268435456) ? 28 : (((4 * 32) <= 536870912) ? 29 : (((4 * 32) <= 1073741824) ? 30 : (((4 * 32) <= 2147483648) ? 31 : 32))))))))))))))))))))))))))))))) );
+. = ALIGN( 1 << ((((4 * (16 + 48)) <= 4) ? 2 : (((4 * (16 + 48)) <= 8) ? 3 : (((4 * (16 + 48)) <= 16) ? 4 : (((4 * (16 + 48)) <= 32) ? 5 : (((4 * (16 + 48)) <= 64) ? 6 : (((4 * (16 + 48)) <= 128) ? 7 : (((4 * (16 + 48)) <= 256) ? 8 : (((4 * (16 + 48)) <= 512) ? 9 : (((4 * (16 + 48)) <= 1024) ? 10 : (((4 * (16 + 48)) <= 2048) ? 11 : (((4 * (16 + 48)) <= 4096) ? 12 : (((4 * (16 + 48)) <= 8192) ? 13 : (((4 * (16 + 48)) <= 16384) ? 14 : (((4 * (16 + 48)) <= 32768) ? 15:(((4 * (16 + 48)) <= 65536) ? 16 : (((4 * (16 + 48)) <= 131072) ? 17 : (((4 * (16 + 48)) <= 262144) ? 18:(((4 * (16 + 48)) <= 524288) ? 19 : (((4 * (16 + 48)) <= 1048576) ? 20 : (((4 * (16 + 48)) <= 2097152) ? 21 : (((4 * (16 + 48)) <= 4194304) ? 22 : (((4 * (16 + 48)) <= 8388608) ? 23 : (((4 * (16 + 48)) <= 16777216) ? 24 : (((4 * (16 + 48)) <= 33554432) ? 25 : (((4 * (16 + 48)) <= 67108864) ? 26 : (((4 * (16 + 48)) <= 134217728) ? 27 : (((4 * (16 + 48)) <= 268435456) ? 28 : (((4 * (16 + 48)) <= 536870912) ? 29 : (((4 * (16 + 48)) <= 1073741824) ? 30 : (((4 * (16 + 48)) <= 2147483648) ? 31 : 32))))))))))))))))))))))))))))))) );
 _vector_start = .;
 KEEP(*(.exc_vector_table))
 KEEP(*(".exc_vector_table.*"))
@@ -67,21 +57,21 @@ _vector_end = .;
  } > FLASH
     text :
  {
- _image_text_start = .;
+ __text_region_start = .;
  *(.text)
  *(".text.*")
  *(".TEXT.*")
  *(.gnu.linkonce.t.*)
  *(.glue_7t) *(.glue_7) *(.vfp11_veneer) *(.v4_bx)
  } > FLASH
- _image_text_end = .;
+ __text_region_end = .;
  .ARM.exidx :
  {
  __exidx_start = .;
  *(.ARM.exidx* gnu.linkonce.armexidx.*)
  __exidx_end = .;
  } > FLASH
- _image_rodata_start = .;
+ __rodata_region_start = .;
  initlevel :
  {
   __init_start = .;
@@ -119,6 +109,7 @@ _vector_end = .;
   __app_shmem_regions_end = .;
  } > FLASH
  bt_l2cap_fixed_chan_area : SUBALIGN(4) { _bt_l2cap_fixed_chan_list_start = .; KEEP(*(SORT_BY_NAME(._bt_l2cap_fixed_chan.static.*))); _bt_l2cap_fixed_chan_list_end = .; } > FLASH
+ bt_conn_cb_area : SUBALIGN(4) { _bt_conn_cb_list_start = .; KEEP(*(SORT_BY_NAME(._bt_conn_cb.static.*))); _bt_conn_cb_list_end = .; } > FLASH
  bt_gatt_service_static_area : SUBALIGN(4) { _bt_gatt_service_static_list_start = .; KEEP(*(SORT_BY_NAME(._bt_gatt_service_static.static.*))); _bt_gatt_service_static_list_end = .; } > FLASH
  k_p4wq_initparam_area : SUBALIGN(4) { _k_p4wq_initparam_list_start = .; KEEP(*(SORT_BY_NAME(._k_p4wq_initparam.static.*))); _k_p4wq_initparam_list_end = .; } > FLASH
  log_strings_sections : ALIGN_WITH_INPUT
@@ -159,9 +150,9 @@ _vector_end = .;
  } > FLASH
  device_handles : ALIGN_WITH_INPUT
  {
-  __device_handles_start = .;
-  KEEP(*(SORT(.__device_handles_pass2*)));
-  __device_handles_end = .;
+__device_handles_start = .;
+KEEP(*(SORT(.__device_handles_pass2*)));
+__device_handles_end = .;
  } > FLASH
     rodata :
  {
@@ -170,9 +161,9 @@ _vector_end = .;
  *(.gnu.linkonce.r.*)
  . = ALIGN(4);
  } > FLASH
- _image_rodata_end = .;
- . = ALIGN(_region_min_align); . = ALIGN( 1 << LOG2CEIL(_image_rodata_end -_image_rom_start));
- _image_rom_end = .;
+ __rodata_region_end = .;
+ . = ALIGN(_region_min_align); . = ALIGN( 1 << ((((__rodata_region_end -__rom_region_start) <= 4) ? 2 : (((__rodata_region_end -__rom_region_start) <= 8) ? 3 : (((__rodata_region_end -__rom_region_start) <= 16) ? 4 : (((__rodata_region_end -__rom_region_start) <= 32) ? 5 : (((__rodata_region_end -__rom_region_start) <= 64) ? 6 : (((__rodata_region_end -__rom_region_start) <= 128) ? 7 : (((__rodata_region_end -__rom_region_start) <= 256) ? 8 : (((__rodata_region_end -__rom_region_start) <= 512) ? 9 : (((__rodata_region_end -__rom_region_start) <= 1024) ? 10 : (((__rodata_region_end -__rom_region_start) <= 2048) ? 11 : (((__rodata_region_end -__rom_region_start) <= 4096) ? 12 : (((__rodata_region_end -__rom_region_start) <= 8192) ? 13 : (((__rodata_region_end -__rom_region_start) <= 16384) ? 14 : (((__rodata_region_end -__rom_region_start) <= 32768) ? 15:(((__rodata_region_end -__rom_region_start) <= 65536) ? 16 : (((__rodata_region_end -__rom_region_start) <= 131072) ? 17 : (((__rodata_region_end -__rom_region_start) <= 262144) ? 18:(((__rodata_region_end -__rom_region_start) <= 524288) ? 19 : (((__rodata_region_end -__rom_region_start) <= 1048576) ? 20 : (((__rodata_region_end -__rom_region_start) <= 2097152) ? 21 : (((__rodata_region_end -__rom_region_start) <= 4194304) ? 22 : (((__rodata_region_end -__rom_region_start) <= 8388608) ? 23 : (((__rodata_region_end -__rom_region_start) <= 16777216) ? 24 : (((__rodata_region_end -__rom_region_start) <= 33554432) ? 25 : (((__rodata_region_end -__rom_region_start) <= 67108864) ? 26 : (((__rodata_region_end -__rom_region_start) <= 134217728) ? 27 : (((__rodata_region_end -__rom_region_start) <= 268435456) ? 28 : (((__rodata_region_end -__rom_region_start) <= 536870912) ? 29 : (((__rodata_region_end -__rom_region_start) <= 1073741824) ? 30 : (((__rodata_region_end -__rom_region_start) <= 2147483648) ? 31 : 32))))))))))))))))))))))))))))))));
+ __rom_region_end = .;
    
     /DISCARD/ : {
  *(.got.plt)
@@ -186,23 +177,35 @@ _vector_end = .;
  _image_ram_start = .;
 .ramfunc : ALIGN_WITH_INPUT
 {
- . = ALIGN(_region_min_align); . = ALIGN( 1 << LOG2CEIL(_ramfunc_ram_size));
- _ramfunc_ram_start = .;
+ . = ALIGN(_region_min_align); . = ALIGN( 1 << ((((__ramfunc_size) <= 4) ? 2 : (((__ramfunc_size) <= 8) ? 3 : (((__ramfunc_size) <= 16) ? 4 : (((__ramfunc_size) <= 32) ? 5 : (((__ramfunc_size) <= 64) ? 6 : (((__ramfunc_size) <= 128) ? 7 : (((__ramfunc_size) <= 256) ? 8 : (((__ramfunc_size) <= 512) ? 9 : (((__ramfunc_size) <= 1024) ? 10 : (((__ramfunc_size) <= 2048) ? 11 : (((__ramfunc_size) <= 4096) ? 12 : (((__ramfunc_size) <= 8192) ? 13 : (((__ramfunc_size) <= 16384) ? 14 : (((__ramfunc_size) <= 32768) ? 15:(((__ramfunc_size) <= 65536) ? 16 : (((__ramfunc_size) <= 131072) ? 17 : (((__ramfunc_size) <= 262144) ? 18:(((__ramfunc_size) <= 524288) ? 19 : (((__ramfunc_size) <= 1048576) ? 20 : (((__ramfunc_size) <= 2097152) ? 21 : (((__ramfunc_size) <= 4194304) ? 22 : (((__ramfunc_size) <= 8388608) ? 23 : (((__ramfunc_size) <= 16777216) ? 24 : (((__ramfunc_size) <= 33554432) ? 25 : (((__ramfunc_size) <= 67108864) ? 26 : (((__ramfunc_size) <= 134217728) ? 27 : (((__ramfunc_size) <= 268435456) ? 28 : (((__ramfunc_size) <= 536870912) ? 29 : (((__ramfunc_size) <= 1073741824) ? 30 : (((__ramfunc_size) <= 2147483648) ? 31 : 32))))))))))))))))))))))))))))))));
+ __ramfunc_start = .;
  *(.ramfunc)
  *(".ramfunc.*")
- . = ALIGN(_region_min_align); . = ALIGN( 1 << LOG2CEIL(_ramfunc_ram_size));
- _ramfunc_ram_end = .;
+ . = ALIGN(_region_min_align); . = ALIGN( 1 << ((((__ramfunc_size) <= 4) ? 2 : (((__ramfunc_size) <= 8) ? 3 : (((__ramfunc_size) <= 16) ? 4 : (((__ramfunc_size) <= 32) ? 5 : (((__ramfunc_size) <= 64) ? 6 : (((__ramfunc_size) <= 128) ? 7 : (((__ramfunc_size) <= 256) ? 8 : (((__ramfunc_size) <= 512) ? 9 : (((__ramfunc_size) <= 1024) ? 10 : (((__ramfunc_size) <= 2048) ? 11 : (((__ramfunc_size) <= 4096) ? 12 : (((__ramfunc_size) <= 8192) ? 13 : (((__ramfunc_size) <= 16384) ? 14 : (((__ramfunc_size) <= 32768) ? 15:(((__ramfunc_size) <= 65536) ? 16 : (((__ramfunc_size) <= 131072) ? 17 : (((__ramfunc_size) <= 262144) ? 18:(((__ramfunc_size) <= 524288) ? 19 : (((__ramfunc_size) <= 1048576) ? 20 : (((__ramfunc_size) <= 2097152) ? 21 : (((__ramfunc_size) <= 4194304) ? 22 : (((__ramfunc_size) <= 8388608) ? 23 : (((__ramfunc_size) <= 16777216) ? 24 : (((__ramfunc_size) <= 33554432) ? 25 : (((__ramfunc_size) <= 67108864) ? 26 : (((__ramfunc_size) <= 134217728) ? 27 : (((__ramfunc_size) <= 268435456) ? 28 : (((__ramfunc_size) <= 536870912) ? 29 : (((__ramfunc_size) <= 1073741824) ? 30 : (((__ramfunc_size) <= 2147483648) ? 31 : 32))))))))))))))))))))))))))))))));
+ __ramfunc_end = .;
 } > SRAM AT > FLASH
-_ramfunc_ram_size = _ramfunc_ram_end - _ramfunc_ram_start;
-_ramfunc_rom_start = LOADADDR(.ramfunc);
+__ramfunc_size = __ramfunc_end - __ramfunc_start;
+__ramfunc_load_start = LOADADDR(.ramfunc);
+   
     datas : ALIGN_WITH_INPUT
  {
- __data_ram_start = .;
+ __data_region_start = .;
+ __data_start = .;
  *(.data)
  *(".data.*")
  *(".kernel.*")
+ __data_end = .;
  } > SRAM AT > FLASH
-    __data_rom_start = LOADADDR(datas);
+    __data_size = __data_end - __data_start;
+    __data_load_start = LOADADDR(datas);
+    __data_region_load_start = LOADADDR(datas);
+        device_states : ALIGN_WITH_INPUT
+        {
+                __device_states_start = .;
+  KEEP(*(".z_devstate"));
+  KEEP(*(".z_devstate.*"));
+                __device_states_end = .;
+        } > SRAM AT > FLASH
  initshell : ALIGN_WITH_INPUT
  {
   __shell_module_start = .;
@@ -229,6 +232,7 @@ _ramfunc_rom_start = LOADADDR(.ramfunc);
  k_mbox_area : ALIGN_WITH_INPUT SUBALIGN(4) { _k_mbox_list_start = .; *(SORT_BY_NAME(._k_mbox.static.*)); _k_mbox_list_end = .; } > SRAM AT > FLASH
  k_pipe_area : ALIGN_WITH_INPUT SUBALIGN(4) { _k_pipe_list_start = .; *(SORT_BY_NAME(._k_pipe.static.*)); _k_pipe_list_end = .; } > SRAM AT > FLASH
  k_sem_area : ALIGN_WITH_INPUT SUBALIGN(4) { _k_sem_list_start = .; *(SORT_BY_NAME(._k_sem.static.*)); _k_sem_list_end = .; } > SRAM AT > FLASH
+ k_event_area : ALIGN_WITH_INPUT SUBALIGN(4) { _k_event_list_start = .; *(SORT_BY_NAME(._k_event.static.*)); _k_event_list_end = .; } > SRAM AT > FLASH
  k_queue_area : ALIGN_WITH_INPUT SUBALIGN(4) { _k_queue_list_start = .; *(SORT_BY_NAME(._k_queue.static.*)); _k_queue_list_end = .; } > SRAM AT > FLASH
  k_condvar_area : ALIGN_WITH_INPUT SUBALIGN(4) { _k_condvar_list_start = .; *(SORT_BY_NAME(._k_condvar.static.*)); _k_condvar_list_end = .; } > SRAM AT > FLASH
  _net_buf_pool_area : ALIGN_WITH_INPUT SUBALIGN(4)
@@ -236,7 +240,7 @@ _ramfunc_rom_start = LOADADDR(.ramfunc);
   _net_buf_pool_list = .;
   KEEP(*(SORT_BY_NAME("._net_buf_pool.static.*")))
  } > SRAM AT > FLASH
-    __data_ram_end = .;
+    __data_region_end = .;
    bss (NOLOAD) : ALIGN_WITH_INPUT
  {
         . = ALIGN(4);
@@ -292,14 +296,18 @@ _ramfunc_rom_start = LOADADDR(.ramfunc);
  .debug_pubtypes 0 : { *(.debug_pubtypes) }
  .debug_ranges 0 : { *(.debug_ranges) }
  .debug_macro 0 : { *(.debug_macro) }
+ .debug_line_str 0 : { *(.debug_line_str) }
+ .debug_loclists 0 : { *(.debug_loclists) }
+ .debug_rnglists 0 : { *(.debug_rnglists) }
     /DISCARD/ : { *(.note.GNU-stack) }
     .ARM.attributes 0 :
  {
  KEEP(*(.ARM.attributes))
  KEEP(*(.gnu.attributes))
  }
+   
 .last_section (NOLOAD) :
 {
 } > FLASH
-_flash_used = LOADADDR(.last_section) - _image_rom_start;
+_flash_used = LOADADDR(.last_section) - __rom_region_start;
     }

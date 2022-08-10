@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/Dominik/ncs/v1.7.1/nrf/lib
+# Install script for directory: C:/Users/Dominik/ncs/v2.0.0/nrf/lib
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,26 +34,26 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/Users/Dominik/ncs/v1.7.1/toolchain/opt/bin/arm-none-eabi-objdump.exe")
+  set(CMAKE_OBJDUMP "C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump.exe")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("D:/VSCodeNCS/phyphox-Satellite/build/modules/nrf/lib/bin/cmake_install.cmake")
+  include("C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/modules/nrf/lib/bin/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("D:/VSCodeNCS/phyphox-Satellite/build/modules/nrf/lib/multithreading_lock/cmake_install.cmake")
+  include("C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/modules/nrf/lib/multithreading_lock/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("D:/VSCodeNCS/phyphox-Satellite/build/modules/nrf/lib/flash_patch/cmake_install.cmake")
+  include("C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/modules/nrf/lib/flash_patch/cmake_install.cmake")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("D:/VSCodeNCS/phyphox-Satellite/build/modules/nrf/lib/fatal_error/cmake_install.cmake")
+  include("C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/modules/nrf/lib/fatal_error/cmake_install.cmake")
 endif()
 

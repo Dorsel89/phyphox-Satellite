@@ -14,8 +14,8 @@
 #define ___cpu_t_arch_OFFSET 0x15
 #define ___cpu_t_SIZEOF 0x18
 #define ___kernel_t_cpus_OFFSET 0x0
-#define ___kernel_t_idle_OFFSET 0x20
-#define ___kernel_t_ready_q_OFFSET 0x24
+#define ___kernel_t_idle_OFFSET 0x18
+#define ___kernel_t_ready_q_OFFSET 0x1c
 #define ___ready_q_t_cache_OFFSET 0x0
 #define ___thread_base_t_user_options_OFFSET 0xc
 #define ___thread_base_t_thread_state_OFFSET 0xd
@@ -32,6 +32,7 @@
 #define K_THREAD_SIZEOF 0x80
 #define _DEVICE_STRUCT_SIZEOF 0x18
 #define _DEVICE_STRUCT_HANDLES_OFFSET 0x14
+#define _PM_DEVICE_STRUCT_FLAGS_OFFSET 0x0
 #define ___thread_arch_t_basepri_OFFSET 0x0
 #define ___thread_arch_t_swap_return_value_OFFSET 0x4
 #define ___basic_sf_t_a1_OFFSET 0x0

@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/Dominik/ncs/v1.7.1/zephyr/drivers/sensor
+# Install script for directory: C:/Users/Dominik/ncs/v2.0.0/zephyr/drivers/sensor
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,16 +34,6 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/Users/Dominik/ncs/v1.7.1/toolchain/opt/bin/arm-none-eabi-objdump.exe")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("D:/VSCodeNCS/phyphox-Satellite/build/zephyr/drivers/sensor/grove/cmake_install.cmake")
-endif()
-
-if(NOT CMAKE_INSTALL_LOCAL_ONLY)
-  # Include the install script for the subdirectory.
-  include("D:/VSCodeNCS/phyphox-Satellite/build/zephyr/drivers/sensor/nrf5/cmake_install.cmake")
+  set(CMAKE_OBJDUMP "C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump.exe")
 endif()
 

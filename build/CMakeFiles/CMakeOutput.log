@@ -1,7 +1,7 @@
-The target system is: Generic - 2.6.99 - arm
-The host system is: Windows - 10.0.19042 - AMD64
+The target system is: Generic - 3.0.99 - arm
+The host system is: Windows - 10.0.19044 - AMD64
 Compiling the C compiler identification source file "CMakeCCompilerId.c" succeeded.
-Compiler: C:/Users/Dominik/ncs/v1.7.1/toolchain/opt/bin/arm-none-eabi-gcc.exe 
+Compiler: C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc.exe 
 Build flags: 
 Id flags: -c 
 
@@ -11,10 +11,10 @@ The output was:
 
 Compilation of the C compiler identification source "CMakeCCompilerId.c" produced "CMakeCCompilerId.o"
 
-The C compiler identification is GNU, found in "D:/VSCodeNCS/phyphox-Satellite/build/CMakeFiles/3.20.5/CompilerIdC/CMakeCCompilerId.o"
+The C compiler identification is GNU, found in "C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/3.20.5/CompilerIdC/CMakeCCompilerId.o"
 
 Compiling the CXX compiler identification source file "CMakeCXXCompilerId.cpp" succeeded.
-Compiler: C:/Users/Dominik/ncs/v1.7.1/toolchain/opt/bin/arm-none-eabi-gcc.exe 
+Compiler: C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-gcc.exe 
 Build flags: 
 Id flags: -c 
 
@@ -24,11 +24,372 @@ The output was:
 
 Compilation of the CXX compiler identification source "CMakeCXXCompilerId.cpp" produced "CMakeCXXCompilerId.o"
 
-The CXX compiler identification is GNU, found in "D:/VSCodeNCS/phyphox-Satellite/build/CMakeFiles/3.20.5/CompilerIdCXX/CMakeCXXCompilerId.o"
+The CXX compiler identification is GNU, found in "C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/3.20.5/CompilerIdCXX/CMakeCXXCompilerId.o"
 
 Checking whether the ASM compiler is GNU using "--version" matched "(GNU assembler)|(GCC)|(Free Software Foundation)":
-arm-none-eabi-gcc.exe (GNU Tools for Arm Embedded Processors 9-2019-q4-major) 9.2.1 20191025 (release) [ARM/arm-9-branch revision 277599]
-Copyright (C) 2019 Free Software Foundation, Inc.
+arm-zephyr-eabi-gcc.exe (Zephyr SDK 0.14.1) 10.3.0
+Copyright (C) 2020 Free Software Foundation, Inc.
 This is free software; see the source for copying conditions.  There is NO
 warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_7ab0c && [1/2] Building C object CMakeFiles/cmTC_7ab0c.dir/src.c.obj
+[2/2] Linking C executable cmTC_7ab0c
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0_ succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_0ac8f && [1/2] Building C object CMakeFiles/cmTC_0ac8f.dir/src.c.obj
+[2/2] Linking C executable cmTC_0ac8f
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_Wpointer_sign_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_f375a && [1/2] Building C object CMakeFiles/cmTC_f375a.dir/src.c.obj
+[2/2] Linking C executable cmTC_f375a
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_Wpointer_arith_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_f437f && [1/2] Building C object CMakeFiles/cmTC_f437f.dir/src.c.obj
+[2/2] Linking C executable cmTC_f437f
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_Wexpansion_to_defined_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_6029b && [1/2] Building C object CMakeFiles/cmTC_6029b.dir/src.c.obj
+[2/2] Linking C executable cmTC_6029b
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_Wlogical_op_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_12189 && [1/2] Building C object CMakeFiles/cmTC_12189.dir/src.c.obj
+[2/2] Linking C executable cmTC_12189
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_Wmissing_field_initializers_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_a4aa0 && [1/2] Building C object CMakeFiles/cmTC_a4aa0.dir/src.c.obj
+[2/2] Linking C executable cmTC_a4aa0
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_Wpacked_bitfield_compat_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_9ad28 && [1/2] Building C object CMakeFiles/cmTC_9ad28.dir/src.c.obj
+[2/2] Linking C executable cmTC_9ad28
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_Wvla_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_da374 && [1/2] Building C object CMakeFiles/cmTC_da374.dir/src.c.obj
+[2/2] Linking C executable cmTC_da374
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_Wunused_but_set_variable_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_7c479 && [1/2] Building C object CMakeFiles/cmTC_7c479.dir/src.c.obj
+[2/2] Linking C executable cmTC_7c479
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_Werror_implicit_int_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_d9524 && [1/2] Building C object CMakeFiles/cmTC_d9524.dir/src.c.obj
+[2/2] Linking C executable cmTC_d9524
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_fno_freestanding_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_e4dab && [1/2] Building C object CMakeFiles/cmTC_e4dab.dir/src.c.obj
+[2/2] Linking C executable cmTC_e4dab
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_gdwarf_4_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_c0454 && [1/2] Building C object CMakeFiles/cmTC_c0454.dir/src.c.obj
+[2/2] Linking C executable cmTC_c0454
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__Wl___print_memory_usage succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_78b20 && [1/2] Building C object CMakeFiles/cmTC_78b20.dir/src.c.obj
+[2/2] Linking C executable cmTC_78b20
+Memory region         Used Size  Region Size  %age Used
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__fsanitize_address succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_9fe2b && [1/2] Building C object CMakeFiles/cmTC_9fe2b.dir/src.c.obj
+[2/2] Linking C executable cmTC_9fe2b
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__fsanitize_undefined succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_c91d8 && [1/2] Building C object CMakeFiles/cmTC_c91d8.dir/src.c.obj
+[2/2] Linking C executable cmTC_c91d8
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__no_pie succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_2ee82 && [1/2] Building C object CMakeFiles/cmTC_2ee82.dir/src.c.obj
+[2/2] Linking C executable cmTC_2ee82
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__mcpu_cortex_m4 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_011a0 && [1/2] Building C object CMakeFiles/cmTC_011a0.dir/src.c.obj
+[2/2] Linking C executable cmTC_011a0
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__mthumb succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_f0a39 && [1/2] Building C object CMakeFiles/cmTC_f0a39.dir/src.c.obj
+[2/2] Linking C executable cmTC_f0a39
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__mabi_aapcs succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_dc5ac && [1/2] Building C object CMakeFiles/cmTC_dc5ac.dir/src.c.obj
+[2/2] Linking C executable cmTC_dc5ac
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__mfp16_format_ieee succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_b9913 && [1/2] Building C object CMakeFiles/cmTC_b9913.dir/src.c.obj
+[2/2] Linking C executable cmTC_b9913
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__Wl___gc_sections succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_081aa && [1/2] Building C object CMakeFiles/cmTC_081aa.dir/src.c.obj
+[2/2] Linking C executable cmTC_081aa
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__Wl___build_id_none succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_25bfe && [1/2] Building C object CMakeFiles/cmTC_25bfe.dir/src.c.obj
+[2/2] Linking C executable cmTC_25bfe
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__Wl___sort_common_descending succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_d95ba && [1/2] Building C object CMakeFiles/cmTC_d95ba.dir/src.c.obj
+[2/2] Linking C executable cmTC_d95ba
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__Wl___sort_section_alignment succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_77655 && [1/2] Building C object CMakeFiles/cmTC_77655.dir/src.c.obj
+[2/2] Linking C executable cmTC_77655
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__nostdlib succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_7596f && [1/2] Building C object CMakeFiles/cmTC_7596f.dir/src.c.obj
+[2/2] Linking C executable cmTC_7596f
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__static succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_e16ab && [1/2] Building C object CMakeFiles/cmTC_e16ab.dir/src.c.obj
+[2/2] Linking C executable cmTC_e16ab
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__Wl__X succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_72e61 && [1/2] Building C object CMakeFiles/cmTC_72e61.dir/src.c.obj
+[2/2] Linking C executable cmTC_72e61
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__Wl__N succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_d4309 && [1/2] Building C object CMakeFiles/cmTC_d4309.dir/src.c.obj
+[2/2] Linking C executable cmTC_d4309
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0__Wl___orphan_handling_warn succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_22f27 && [1/2] Building C object CMakeFiles/cmTC_22f27.dir/src.c.obj
+[2/2] Linking C executable cmTC_22f27
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_fno_asynchronous_unwind_tables_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_2beda && [1/2] Building C object CMakeFiles/cmTC_2beda.dir/src.c.obj
+[2/2] Linking C executable cmTC_2beda
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_fno_pie_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_8e0a3 && [1/2] Building C object CMakeFiles/cmTC_8e0a3.dir/src.c.obj
+[2/2] Linking C executable cmTC_8e0a3
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_fno_pic_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_bf5d5 && [1/2] Building C object CMakeFiles/cmTC_bf5d5.dir/src.c.obj
+[2/2] Linking C executable cmTC_bf5d5
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_fno_reorder_functions_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_4a5a3 && [1/2] Building C object CMakeFiles/cmTC_4a5a3.dir/src.c.obj
+[2/2] Linking C executable cmTC_4a5a3
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_fno_defer_pop_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_d55d8 && [1/2] Building C object CMakeFiles/cmTC_d55d8.dir/src.c.obj
+[2/2] Linking C executable cmTC_d55d8
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_fmacro_prefix_map_C__Users_Dominik_Documents_GitHub_phyphox_Satellite_CMAKE_SOURCE_DIR_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_6ec28 && [1/2] Building C object CMakeFiles/cmTC_6ec28.dir/src.c.obj
+[2/2] Linking C executable cmTC_6ec28
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_fmacro_prefix_map_C__Users_Dominik_ncs_v2_0_0_zephyr_ZEPHYR_BASE_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_cbf37 && [1/2] Building C object CMakeFiles/cmTC_cbf37.dir/src.c.obj
+[2/2] Linking C executable cmTC_cbf37
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_fmacro_prefix_map_C__Users_Dominik_ncs_v2_0_0_WEST_TOPDIR_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_9c056 && [1/2] Building C object CMakeFiles/cmTC_9c056.dir/src.c.obj
+[2/2] Linking C executable cmTC_9c056
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_ffunction_sections_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_e0379 && [1/2] Building C object CMakeFiles/cmTC_e0379.dir/src.c.obj
+[2/2] Linking C executable cmTC_e0379
+
+
+Source file was:
+int main(void) { return 0; }
+Performing C SOURCE FILE Test check_fdata_sections_C__nostartfiles__nostdlib__isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include___isystem__c__users_dominik_ncs_toolchains_v2_0_0_opt_zephyr_sdk_arm_zephyr_eabi_bin____lib_gcc_arm_zephyr_eabi_10_3_0_include_fixed___Wl___unresolved_symbols_ignore_in_object_files__Wl___entry_0 succeeded with the following output:
+Change Dir: C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/CMakeFiles/CMakeTmp
+
+Run Build Command(s):C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/bin/ninja.exe cmTC_bbf21 && [1/2] Building C object CMakeFiles/cmTC_bbf21.dir/src.c.obj
+[2/2] Linking C executable cmTC_bbf21
+
+
+Source file was:
+int main(void) { return 0; }
