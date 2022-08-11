@@ -10,6 +10,9 @@ extern void enableMLX(struct device *i2c_dev){
     startBurstMode(i2c_dev);
 }
 
+extern void disableMLX(struct device *i2c_dev){
+    mlx_exitMode(i2c_dev);
+}
 
 // GPIO DATA READY
 

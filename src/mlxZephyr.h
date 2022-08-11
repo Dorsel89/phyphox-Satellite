@@ -10,4 +10,5 @@ static struct k_work work_mlx;
 
 extern void initMLX(struct device *i2c_dev);
 extern void enableMLX(struct device *i2c_dev);
+extern void disableMLX(struct device *i2c_dev);
 #endif

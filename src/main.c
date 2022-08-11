@@ -109,7 +109,7 @@ void main(void)
 	*/
 
 //------------DS18B20---------------------
-
+/*
 float fTemp1, fTemp2;
 	int iTemp;
 
@@ -117,14 +117,14 @@ float fTemp1, fTemp2;
 
 	fTemp1 = ds18b20_get_temp();	// Method 1 (from sd18b20.c)
 	k_sleep(K_SECONDS(1));
-
+*/
 	//fTemp2 = ds18b20_get_temp_method_2();	// Method 2 (from sd18b20.c)
 	//k_sleep(K_SECONDS(1));
 
 	//iTemp = read_temperature();		// Metohd 3 (from sensor.c)
 	
 	//k_sleep(K_SECONDS(1));
-
+/*
 	printk("Hello World! %s\nTemperature is :\n%d from method 1\n%d from method 2\n%d from method 3\n\n", CONFIG_BOARD, (int)fTemp1, (int)fTemp2, iTemp);
 
 	while (1)
@@ -137,5 +137,15 @@ float fTemp1, fTemp2;
 
 		printk("The temperature is now : \n%d from method 1\n%d from method 2\n%d from method 3\n\n", (int)fTemp1, (int)fTemp2, iTemp);
 	}
+	*/
 
+	k_sleep(K_SECONDS(1));
+	disableMLX(i2c_dev);
+	k_sleep(K_SECONDS(2));
+	printk("enable mlx\n");
+	enableMLX(i2c_dev);
+	k_sleep(K_SECONDS(3));
+	printk("disable mlx\n");
+	disableMLX(i2c_dev);
+	
 }
