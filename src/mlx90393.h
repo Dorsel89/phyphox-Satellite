@@ -3,7 +3,7 @@
 
 #include <zephyr/types.h>
 #include <drivers/i2c.h>
-#include "phyphox.h"
+#include "sensors.h"
 
 //#include <sys/util.h>
 

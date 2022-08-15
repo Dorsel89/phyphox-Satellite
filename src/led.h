@@ -1,30 +1,33 @@
-#ifndef LED_H
-#define LED_H
+#ifndef _LED_H
+#define _LED_H
 
-#include <stdint.h>
-#include "zephyr.h"
-#include <drivers/gpio.h>
 #include <device.h>
-#include "phyphox.h"
+#include <devicetree.h>
+#include <drivers/led.h>
 
-#define LED0_NODE DT_NODELABEL(led0)
-#define LED0_GPIO DT_GPIO_LABEL(LED0_NODE, gpios)
-#define LED0_PIN DT_GPIO_PIN(LED0_NODE, gpios)
-#define LED0_FLAGS DT_GPIO_FLAGS(LED0_NODE, gpios)
+void led_blink_times(const struct device* led, uint8_t times);
 
-#define LED1_NODE DT_NODELABEL(led1)
-#define LED1_GPIO DT_GPIO_LABEL(LED1_NODE, gpios)
-#define LED1_PIN DT_GPIO_PIN(LED1_NODE, gpios)
-#define LED1_FLAGS DT_GPIO_FLAGS(LED1_NODE, gpios)
+/* 1000 msec = 1 sec */
+#define LED_ON_TIME_MS      300
+#define LED_SLEEP_TIME_MS   300
 
-#define LED_BLUE_ID 0
-#define LED_RED_ID 1
+// LED DEVICE
+#define RED_LED_NODE DT_ALIAS(red_led)
+#define RED_LED_PARENT_CONTROLLER DT_PARENT(RED_LED_NODE)
 
-static struct device * led_blue_dev;
-static struct device * led_red_dev;
-//static uint32_t blink_interval_ms = 300; // 
+#if DT_NODE_HAS_STATUS(RED_LED_PARENT_CONTROLLER, okay)
+static const struct device *red_led_dev = DEVICE_DT_GET(RED_LED_PARENT_CONTROLLER);
+#else
+#error "Node is disabled"
+#endif
 
-bool init_LEDs(struct device* led_0, struct device* led_1);
-bool blink_LED(uint8_t ID, uint8_t count);
+#define BLUE_LED_NODE DT_ALIAS(blue_led)
+#define BLUE_LED_PARENT_CONTROLLER DT_PARENT(BLUE_LED_NODE)
 
-#endif  // 
+#if DT_NODE_HAS_STATUS(BLUE_LED_PARENT_CONTROLLER, okay)
+static const struct device *blue_led_dev = DEVICE_DT_GET(BLUE_LED_PARENT_CONTROLLER);
+#else
+#error "Node is disabled"
+#endif
+
+#endif //LED_H

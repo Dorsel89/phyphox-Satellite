@@ -1,15 +1,12 @@
 #include "mlxZephyr.h"
 
 
-extern int8_t initMLX(struct device *i2c_dev){
-	    mlxdev = i2c_dev;
-    	return mlx_init(mlxdev);
+extern int8_t init_mlx(){
+    bool err = mlx_init(mlx_dev);
+	init_interrupt_mlx();
+	sleep_mlx(true);
+	return err;
 }
-
-extern int8_t mlx_enable(struct device *i2c_dev){
-    return startBurstMode(i2c_dev);
-}
-
 
 // GPIO DATA READY
 
@@ -23,25 +20,28 @@ static void mlx_int1_triggered(const struct device *dev, struct gpio_callback *c
 
 }
 extern void sendDataMLX(){
-    mlx_readData(&mlxData.x,&mlxData.y,&mlxData.z,mlxdev);
+    mlx_readData(&mlx_data.x,&mlx_data.y,&mlx_data.z,mlx_dev);
 	if(PRINT_SENSOR_DATA){
-    	printk("MLX: x: %f y: %f z: %f \n",mlxData.x,mlxData.y,mlxData.z);
+    	printk("MLX: x: %f y: %f z: %f \n",mlx_data.x,mlx_data.y,mlx_data.z);
 	}
 	
 	float timestamp = k_uptime_get() /1000.0;
+	mlx_data.timestamp = timestamp;
 
-	mlxData.array[0] = mlxData.x;
-	mlxData.array[1] = mlxData.y;
-	mlxData.array[2] = mlxData.z;
-	mlxData.array[3] = mlxData.timestamp;
+	mlx_data.array[0] = mlx_data.x;
+	mlx_data.array[1] = mlx_data.y;
+	mlx_data.array[2] = mlx_data.z;
+	mlx_data.array[3] = mlx_data.timestamp;
 
-	sendData(SENSOR_MLX_ID, &mlxData.array, sizeof(mlxData.array));
+	send_data(SENSOR_MLX_ID, &mlx_data.array, sizeof(mlx_data.array));
 }
 
-int8_t init_Interrupt_MLX(){
+int8_t init_interrupt_mlx(){
     int8_t returnValue;
 
 	k_work_init(&work_mlx, sendDataMLX);
+	k_work_init(&config_mlx, set_config_mlx);
+
 
     if (!device_is_ready(mlx_int1.port)) {
 		printk("Error: button device %s is not ready\n",
@@ -70,38 +70,41 @@ int8_t init_Interrupt_MLX(){
     return returnValue;
 }
 
-extern uint8_t sleepMLX(bool SLEEP) {
+extern uint8_t sleep_mlx(bool SLEEP) {
 	if(SLEEP){
-		return mlx_exitMode(mlxdev);
+		return mlx_exitMode(mlx_dev);
 	}else{
-		return mlx_enable(mlxdev);
+		return startBurstMode(mlx_dev);
 	}
 }
 
-static void setConfigMLX(){
-	if (DEBUG_MODE) {printk("MLX Setting config...\n");}
+static void set_config_mlx(){
+	if (DEBUG) {printk("MLX Setting config...\n");}
 
-	if (!mlx_setGain(mlxData.config[1], mlxdev)) {
+	if (!mlx_setGain(mlx_data.config[1], mlx_dev)) {
 		printk("MLX error set Gain\n");
 	}
-	if (!mlx_setFilter(mlxData.config[2], mlxdev)) {
+	if (!mlx_setFilter(mlx_data.config[2], mlx_dev)) {
 		printk("MLX error set Filter\n");
     }
-	if (!mlx_setOversampling(mlxData.config[3], mlxdev)) {
+	if (!mlx_setOversampling(mlx_data.config[3], mlx_dev)) {
 		printk("MLX error set Oversampling\n");
     }
 	/* Set resolution. */
-	if (!mlx_setResolution(MLX90393_X, mlxData.config[4], mlxdev)){
+	if (!mlx_setResolution(MLX90393_X, mlx_data.config[4], mlx_dev)){
 		printk("MLX error set X Resolution\n");
 	}
-	if (!mlx_setResolution(MLX90393_Y, mlxData.config[5], mlxdev)){
+	if (!mlx_setResolution(MLX90393_Y, mlx_data.config[5], mlx_dev)){
 		printk("MLX error set Y Resolution\n");
 	}
-	if (!mlx_setResolution(MLX90393_Z, mlxData.config[6], mlxdev)){
+	if (!mlx_setResolution(MLX90393_Z, mlx_data.config[6], mlx_dev)){
 		printk("MLX error set Z Resolution\n");
 	}
 
-	sleepMLX(!mlxData.config[0]);
+	sleep_mlx(!mlx_data.config[0]);
 }
 
+extern void submit_config_mlx(){
+	k_work_submit(&config_mlx);
+};
 

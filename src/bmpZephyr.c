@@ -18,82 +18,23 @@ static void app_us_delay(uint32_t period, void *intf_ptr) {
 	return k_busy_wait(period);
 }
 
-extern void sendDataBMP(void){
+extern void send_data_bmp(void){
     bmpResult = bmp3_get_sensor_data(sensor_comp, &myData, &bmp388_dev);
 	if(PRINT_SENSOR_DATA){
 		printk("BMP: pressure: %f temp: %f\n", myData.pressure,myData.temperature);
 	}
-	float timestamp = k_uptime_get() /1000.0;
 
-	bmpData.pressure = myData.pressure / 100.0; //Pa to hPa
-	bmpData.temperature = myData.temperature;
-	bmpData.timestamp=timestamp;
+	bmp_data.pressure = myData.pressure;
+	bmp_data.temperature = myData.temperature;
 	
-	bmpData.array[0] = myData.pressure;
-	bmpData.array[1] = myData.temperature;
-	bmpData.array[2] = bmpData.timestamp;
+	float timestamp = k_uptime_get() /1000.0;
+	bmp_data.timestamp=timestamp;
 
-	sendData(SENSOR_BMP384_ID, &bmpData.array, 4*3);
-}
+	bmp_data.array[0] = bmp_data.pressure;
+	bmp_data.array[1] = bmp_data.temperature;
+	bmp_data.array[2] = bmp_data.timestamp;
 
-void initBMP384(struct device *i2c_dev){
-	if (DEBUG_MODE){printk("BMP initialising...\n");}
-
-	bmp388_dev.intf = BMP3_I2C_INTF;
-	bmp388_dev.intf_ptr = i2c_dev;
-	bmp388_dev.intf_rslt = bmpResult;
-	bmp388_dev.dummy_byte = dByte;
-	bmp388_dev.read = app_i2c_read;
-	bmp388_dev.write = app_i2c_write;
-	bmp388_dev.delay_us = app_us_delay;
-	bmpResult = bmp3_init(&bmp388_dev);
-
-	if(bmpResult != 0){
-		printk("init error: %i \n",bmpResult);
-	}
-	else if (DEBUG_MODE)
-	{
-		printk("BMP init successful\n");
-	}
-
-	if (DEBUG_MODE){printk("BMP applying settings...\n");}
-
-	uint16_t settings_sel;
-    bmp388_dev.settings.press_en = BMP3_ENABLE;
-    bmp388_dev.settings.temp_en = BMP3_ENABLE;
-    bmp388_dev.settings.odr_filter.press_os = BMP3_OVERSAMPLING_2X;
-    bmp388_dev.settings.odr_filter.temp_os = BMP3_NO_OVERSAMPLING;
-    bmp388_dev.settings.int_settings.drdy_en =BMP3_ENABLE;
-    bmp388_dev.settings.odr_filter.iir_filter = BMP3_IIR_FILTER_COEFF_3;
-    bmp388_dev.settings.int_settings.level = BMP3_INT_PIN_ACTIVE_HIGH;
-    bmp388_dev.settings.odr_filter.odr = BMP3_ODR_1_5_HZ;
-	settings_sel = BMP3_SEL_PRESS_EN | BMP3_SEL_TEMP_EN | BMP3_SEL_PRESS_OS | BMP3_SEL_TEMP_OS | BMP3_SEL_ODR |BMP3_SEL_DRDY_EN| BMP3_SEL_LEVEL |BMP3_SEL_IIR_FILTER;
-	bmpResult = bmp3_set_sensor_settings(settings_sel, &bmp388_dev); 
-
-	if(bmpResult != 0){
-		printk("BMP apply settings error: %i \n",bmpResult);
-	}
-	else if (DEBUG_MODE){printk("BMP applied settings successfully\n");}
-
-
-	if (bmpResult == BMP3_SENSOR_OK){
-		if (DEBUG_MODE){printk("BMP setting mode...\n");}
-        bmp388_dev.settings.op_mode = BMP3_MODE_NORMAL;
-        bmpResult = bmp3_set_op_mode(&bmp388_dev);
-        if (bmpResult == BMP3_SENSOR_OK)
-        {
-			if (DEBUG_MODE){printk("BMP mode set successfully\n");}
-            bmp388_dev.delay_us(40000, bmp388_dev.intf_ptr);
-            /* Sensor component selection */
-            sensor_comp = BMP3_PRESS | BMP3_TEMP;
-            /* Temperature and Pressure data are read and stored in the bmp3_data instance */
-        }		
-		else 
-		{
-			printk("BMP set mode error: %i \n", bmpResult);
-		}
-	}
-	bmpResult = sleepBMP(true);
+	send_data(SENSOR_BMP384_ID, &bmp_data.array, 4*3);
 }
 
 static const struct gpio_dt_spec bmpInt = GPIO_DT_SPEC_GET_OR(BMP_INT, gpios,{0});
@@ -101,14 +42,55 @@ static struct gpio_callback bmpInt_cb_data;
 
 static void bmpDataReady(const struct device *dev, struct gpio_callback *cb,uint32_t pins)
 {
-	k_work_submit(&work_data);
+	k_work_submit(&work_bmp);
+}
+
+void set_config_bmp(){
+	if (DEBUG){printk("BMP: setting config BMP\n");};
+	uint8_t oversampling = bmp_data.config[1];
+	uint8_t filter = bmp_data.config[2];
+	uint8_t rate = bmp_data.config[3];
+	uint16_t settings_sel;
+
+    bmp388_dev.settings.press_en = BMP3_ENABLE;
+    bmp388_dev.settings.temp_en = BMP3_ENABLE;
+    bmp388_dev.settings.odr_filter.press_os = oversampling;
+    if(oversampling == BMP3_OVERSAMPLING_16X || oversampling == BMP3_OVERSAMPLING_32X){
+        bmp388_dev.settings.odr_filter.temp_os = BMP3_OVERSAMPLING_2X;
+    }else {
+        bmp388_dev.settings.odr_filter.temp_os = BMP3_NO_OVERSAMPLING;
+    }
+    
+    bmp388_dev.settings.odr_filter.temp_os = BMP3_NO_OVERSAMPLING;
+    bmp388_dev.settings.int_settings.drdy_en =BMP3_ENABLE;
+    bmp388_dev.settings.odr_filter.iir_filter = filter;
+    bmp388_dev.settings.odr_filter.odr =rate;//BMP3_ODR_25_HZ;
+	settings_sel = BMP3_SEL_PRESS_OS | BMP3_SEL_TEMP_OS | BMP3_SEL_ODR | BMP3_SEL_IIR_FILTER;
+    bmpResult = bmp3_set_sensor_settings(settings_sel, &bmp388_dev);           
+     if (bmpResult == BMP3_SENSOR_OK){
+        bmp388_dev.settings.op_mode = BMP3_MODE_NORMAL; 
+        bmpResult = bmp3_set_op_mode(&bmp388_dev);
+        if (bmpResult == BMP3_SENSOR_OK)
+        {			
+			if (DEBUG){printk("BMP mode set successfully\n");}
+            bmp388_dev.delay_us(40000, bmp388_dev.intf_ptr);
+            /* Sensor component selection */
+            sensor_comp = BMP3_PRESS | BMP3_TEMP;
+            /* Temperature and Pressure data are read and stored in the bmp3_data instance */
+        }
+    }
+	
+	k_sleep(K_MSEC(100));
+	sleep_bmp(!bmp_data.config[0]);
 }
 
 int8_t init_Interrupt_BMP(){
+	if (DEBUG){printk("BMP: init interrupt\n");};
+
     int8_t returnValue;
 
-	k_work_init(&work_data, sendDataBMP);
-	k_work_init(&work_config, setConfigBMP);
+	k_work_init(&work_bmp, send_data_bmp);
+	k_work_init(&config_work_bmp, set_config_bmp);
 
     if (!device_is_ready(bmpInt.port)) {
 		printk("Error: bmp interrupt %s is not ready\n",
@@ -133,44 +115,43 @@ int8_t init_Interrupt_BMP(){
 	gpio_init_callback(&bmpInt_cb_data, bmpDataReady, BIT(bmpInt.pin));
 	gpio_add_callback(bmpInt.port, &bmpInt_cb_data);
 
-	if(DEBUG_MODE){printk("Set up BMP Interrupt button at %s pin %d\n", bmpInt.port->name, bmpInt.pin);}
+	if(DEBUG){printk("BMP: Set up BMP Interrupt button at %s pin %d\n", bmpInt.port->name, bmpInt.pin);}
 	
     return returnValue;
 }
-extern void submitConfigBMP(){
-	k_work_submit(&work_config);
-};
-extern uint8_t sleepBMP(bool SLEEP){
-	if(SLEEP){
-		bmp388_dev.settings.op_mode = BMP3_MODE_SLEEP;
-		return bmp3_set_op_mode(&bmp388_dev);
-	}else{
-		bmp388_dev.settings.op_mode = BMP3_MODE_NORMAL;
-		return bmp3_set_op_mode(&bmp388_dev);
-	}
-};
-static void setConfigBMP(){
-	if (DEBUG_MODE) {printk("BMP Setting config...\n");}
-	uint8_t oversampling = bmpData.config[1];
-	uint8_t filter = bmpData.config[2];
-	uint8_t rate = bmpData.config[3];
-	uint16_t settings_sel;
 
-    bmp388_dev.settings.odr_filter.press_os = oversampling;
-    if(oversampling == BMP3_OVERSAMPLING_16X || oversampling == BMP3_OVERSAMPLING_32X){
-        bmp388_dev.settings.odr_filter.temp_os = BMP3_OVERSAMPLING_2X;
-    }else {
-        bmp388_dev.settings.odr_filter.temp_os = BMP3_NO_OVERSAMPLING;
-    }
-    
+extern bool init_bmp(){
+
+	if (DEBUG){printk("BMP: init BMP\n");};
+	bmp388_dev.intf = BMP3_I2C_INTF;
+	bmp388_dev.intf_ptr = bmp_dev;
+	bmp388_dev.intf_rslt = bmpResult;
+	bmp388_dev.dummy_byte = dByte;
+	bmp388_dev.read = app_i2c_read;
+	bmp388_dev.write = app_i2c_write;
+	bmp388_dev.delay_us = app_us_delay;
+	bmpResult = bmp3_init(&bmp388_dev);
+
+	if(bmpResult != 0){
+		printk("init error: %i \n",bmpResult);
+	}
+	uint16_t settings_sel;
+    bmp388_dev.settings.press_en = BMP3_ENABLE;
+    bmp388_dev.settings.temp_en = BMP3_ENABLE;
+    bmp388_dev.settings.odr_filter.press_os = BMP3_OVERSAMPLING_2X;
     bmp388_dev.settings.odr_filter.temp_os = BMP3_NO_OVERSAMPLING;
     bmp388_dev.settings.int_settings.drdy_en =BMP3_ENABLE;
-    bmp388_dev.settings.odr_filter.iir_filter = filter;
-    bmp388_dev.settings.odr_filter.odr =rate;//BMP3_ODR_25_HZ;
-	settings_sel = BMP3_SEL_PRESS_OS | BMP3_SEL_TEMP_OS | BMP3_SEL_ODR | BMP3_SEL_IIR_FILTER;
-    bmpResult = bmp3_set_sensor_settings(settings_sel, &bmp388_dev);           
-    if (bmpResult == BMP3_SENSOR_OK){
-        bmp388_dev.settings.op_mode = BMP3_MODE_NORMAL; 
+    bmp388_dev.settings.odr_filter.iir_filter = BMP3_IIR_FILTER_COEFF_3;
+    bmp388_dev.settings.int_settings.level = BMP3_INT_PIN_ACTIVE_HIGH;
+    bmp388_dev.settings.odr_filter.odr = BMP3_ODR_1_5_HZ;
+	settings_sel = BMP3_SEL_PRESS_EN | BMP3_SEL_TEMP_EN | BMP3_SEL_PRESS_OS | BMP3_SEL_TEMP_OS | BMP3_SEL_ODR |BMP3_SEL_DRDY_EN| BMP3_SEL_LEVEL |BMP3_SEL_IIR_FILTER;
+	bmpResult = bmp3_set_sensor_settings(settings_sel, &bmp388_dev); 
+
+	if(bmpResult != 0){
+		printk("BMP: set settings error: %i \n",bmpResult);
+	}          
+	if (bmpResult == BMP3_SENSOR_OK){
+        bmp388_dev.settings.op_mode = BMP3_MODE_NORMAL;
         bmpResult = bmp3_set_op_mode(&bmp388_dev);
         if (bmpResult == BMP3_SENSOR_OK)
         {
@@ -179,16 +160,25 @@ static void setConfigBMP(){
             sensor_comp = BMP3_PRESS | BMP3_TEMP;
             /* Temperature and Pressure data are read and stored in the bmp3_data instance */
         }
-		else {printk("BMP error setting settings\n");}
-    }
-	else {printk("BMP error setting settings\n");}
-
-	if (DEBUG_MODE && bmpResult == BMP3_SENSOR_OK) {
-		printk("BMP settings set to:\nEnable Bit: %i\nOversampling: %i\nFilter: %i\nDatarate: %i",bmpData.config[0],oversampling,filter,rate);
 	}
-	else {printk("BMP error setting settings\n");}
 
-	k_sleep(K_MSEC(100));
-	sleepBMP(!bmpData.config[0]);  
+	bmpResult = sleep_bmp(true);
+
+	init_Interrupt_BMP();
 }
 
+extern void submit_config_bmp(){
+	k_work_submit(&config_work_bmp);
+};
+
+extern uint8_t sleep_bmp(bool SLEEP){
+	if(SLEEP){
+		if (DEBUG){printk("BMP: sleeping\n");};
+		bmp388_dev.settings.op_mode = BMP3_MODE_SLEEP;
+		return bmp3_set_op_mode(&bmp388_dev);
+	}else{
+		if (DEBUG){printk("BMP: awaking\n");};
+		bmp388_dev.settings.op_mode = BMP3_MODE_NORMAL;
+		return bmp3_set_op_mode(&bmp388_dev);
+	}
+};

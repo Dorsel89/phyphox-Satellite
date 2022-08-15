@@ -10,6 +10,14 @@
  / {
 	 model = "Nordic nRF52840 DK NRF52840";
 	 compatible = "nordic,nrf52840-dk-nrf52840";
+
+	 aliases {
+		i2c = &i2c0;
+		blue-led = &led0;
+		red-led = &led1;
+		shtc-3 = &shtc3_node;
+		mpr-ls = &mprls_node;
+	 };
  
 	 chosen {
 		 zephyr,console = &uart0;
@@ -78,25 +86,30 @@
 			 label = "supercap";
 		 };				
 	 };
- 
-	 /* These aliases are provided for compatibility with samples */
-	 /*
-	 aliases {
-		 led-blue = &led0;
-		 led-red = &led1;
-		 one-wire = &button0;
-		 bmp-data-ready = &button1;
-		 mlx-data-ready = &button2;
-		 lc-speed = &button3;
-		 lc-data = &button4;
-		 lc-clk = &button5;
-		 lc-enable = &button6;
-		 imu-dr = &button7;
-		 imu-int = &button8;
-		 usbd0 = &usbd;
-	 };
-	 */
  };
+
+ i2c_0: &i2c0 {
+    compatible = "nordic,nrf-twim";
+    status = "okay";
+    sda-pin = < 14 >;
+    scl-pin = < 13 >;
+    label = "i2c";
+    clock-frequency = <I2C_BITRATE_STANDARD>; 
+
+	shtc3_node: shtcx@70 {
+		compatible = "sensirion,shtcx";
+		chip = "shtc3";
+		measure-mode = "low-power";
+		reg = <0x70>;
+		label = "SHTC3";
+	};
+
+	mprls_node: mpr@18 {
+		compatible = "honeywell,mpr";
+		reg = <0x18>;
+		label = "MPR";
+	};
+};
  
  &adc {
 	 status = "okay";
@@ -122,15 +135,6 @@
 	 rx-pin = <8>;
 	 rts-pin = <5>;
 	 cts-pin = <7>;
- };
- 
- myi2c: &i2c0 {
-	 compatible = "nordic,nrf-twi";
-	 status = "okay";
-	 sda-pin = <14>;
-	 scl-pin = <13>;
-	 label="myi2c";
-	 clock-frequency = <I2C_BITRATE_STANDARD>; 
  };
  
  &flash0 {

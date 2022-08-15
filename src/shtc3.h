@@ -1,62 +1,45 @@
-
 #ifndef SHTC3_H
 #define SHTC3_H
 
-#include <stdint.h>
-#include <drivers/i2c.h>
-#include <drivers/gpio.h>
-#include "workQueue.h"
-#include "phyphox.h"
+#include <device.h>
+#include <devicetree.h>
+#include <drivers/sensor.h>
+
+#include "sensors.h"
 #include "ble.h"
 
-#define CONF_SHTC3_TIMEOUT 20
-#define SHTC3_ADDRESS 0x70
+#define SHTC_NODE DT_ALIAS(shtc_3)
+#if DT_NODE_HAS_STATUS(SHTC_NODE, okay)
+const static struct device *shtc_dev = DEVICE_DT_GET(SHTC_NODE);
+#else
+#error "Node is disabled"
+#endif
 
-typedef enum {
-    CMD_WAKEUP = 0x3517,
-    CMD_RESET = 0x805D,
-    CMD_SLEEP = 0xB098,
-    CMD_READ_ID = 0xEFC8,
-    CMD_MEASUREMENT_NORMAL = 0x58E0,
-    CMD_MEASUREMENT_LOW_POWER = 0x401A,
-} shtc3_cmd_t;
+typedef struct {
+	float humidity;
+	float temperature;
+	float timestamp;
+	float array[3];
+	uint8_t timer_interval;
+	uint8_t config[20];
+}SHTC;
 
-typedef enum {
-    NORMAL = 0,
-    LOW_POWER = 1,
-} power_mode_enum;
+static SHTC shtc_data = { // init values
+    .timer_interval = 5
+};
 
-static power_mode_enum power_mode;
+static struct sensor_value shtc_temp, shtc_humid;
 
-bool initSHTC(struct device *i2c_pointer);
-void init_Interrupt_SHTC();
-
-static void setConfigSHTC();
-extern uint8_t sleepSHTC(bool SLEEP);
-
-static struct device *SHTC_dev;
 static struct k_timer timer_shtc;
 static struct k_work work_shtc;
 static struct k_work config_work_shtc;
 
-static void reset();
+extern bool init_shtc();
+extern void sleep_shtc(bool sleep);
+extern void submit_config_shtc();
 
-static uint16_t raw_temp;
-static uint16_t raw_humidity;
-
-static bool shtc_read(uint16_t *temp, uint16_t *humidity, bool low_power);
-static float toCelsius(uint16_t raw);
-static float toFahrenheit(uint16_t raw);
-static float toPercentage(uint16_t raw);
-
-static bool sendCmd(shtc3_cmd_t cmd);
-static bool checkCRC(const char *data, size_t len);
-static bool getData(char *data, size_t len);
-
-static const int8_t _address = SHTC3_ADDRESS;
-
-
-
-// intervall > 30ms
+void send_data_shtc();
+void shtc_data_ready();
+void set_config_shtc();
 
 #endif  // SHTC3_H

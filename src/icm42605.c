@@ -1,40 +1,51 @@
 #include "icm42605.h"
 
-static struct device *ICM;
-
 static const struct gpio_dt_spec imuInt = GPIO_DT_SPEC_GET_OR(IMU_INT, gpios,{0});
 static struct gpio_callback imuInt_cb_data;
 
 static void sendDataIMU(){
-//  printk("send data \n");
   readData();
-  //printk("x: %f y: %f z: %f \n",ax,ay,az);
-  //float pitch,roll,yaw;
-  //MahonyAHRSupdateIMU(gx,gy,gz,ax,ay,az,&pitch,&roll,&yaw,0.04);
-  //printk("pitch: %f roll: %f yaw: %f \n",pitch,roll,yaw);
+  if(PRINT_SENSOR_DATA){
+    	printk("ICM_A: x: %f y: %f z: %f \n",ax,ay,az);
+      printk("ICM_G: x: %f y: %f z: %f \n",gx,gy,gz);
+	}
+
   float timestamp = k_uptime_get() /1000.0;
-  imuData.timestamp = timestamp;
-  float myArray[4] = {ax,ay,az,timestamp};
+  icm_data.timestamp = timestamp;
+
+  icm_data.a_array[0] = icm_data.ax;
+	icm_data.a_array[1] = icm_data.ay;
+	icm_data.a_array[2] = icm_data.az;
+	icm_data.a_array[3] = icm_data.timestamp;
+
+  icm_data.g_array[0] = icm_data.gx;
+	icm_data.g_array[1] = icm_data.gy;
+	icm_data.g_array[2] = icm_data.gz;
+	icm_data.g_array[3] = icm_data.timestamp;
+
   if(timestamp > oldTime +0.01){
-    sendData(SENSOR_IMU_ACC_ID, &myArray, 4*4);
+    send_data(SENSOR_IMU_ACC_ID, &icm_data.a_array, 4*4);
+    send_data(SENSOR_IMU_GYR_ID, &icm_data.g_array, 4*4);
     oldTime=timestamp;
   }
-	
 }
-static void setConfigIMU(){
-  printk("config received \n");
+
+//TODO
+static void set_config_icm(){
+  if (DEBUG) {printk("ICM Setting config...\n");}
+
 }
 
 static void imuDataReady(const struct device *dev, struct gpio_callback *cb,uint32_t pins)
 {
-	k_work_submit(&work_data);
+	k_work_submit(&work_icm);
 }
 
 int8_t init_Interrupt_IMU(){
     int8_t returnValue;
 
-	k_work_init(&work_data, sendDataIMU);
-	k_work_init(&work_config, setConfigIMU);
+	k_work_init(&work_icm, sendDataIMU);
+	k_work_init(&config_icm, set_config_icm);
 
     if (!device_is_ready(imuInt.port)) {
 		printk("Error: imu interrupt %s is not ready\n",
@@ -61,14 +72,13 @@ int8_t init_Interrupt_IMU(){
 	printk("Set up IMU at %s pin %d\n", imuInt.port->name, imuInt.pin);
   return returnValue;
 }
-extern void submitConfigIMU(){
-	k_work_submit(&work_config);
+
+extern void submit_config_icm(){
+	k_work_submit(&config_icm);
 };
-extern void initIMU(struct device *i2c_pointer, uint8_t Ascale, uint8_t Gscale, uint8_t AODR, uint8_t GODR){
 
-    ICM = i2c_pointer;
-
-    init_Interrupt_IMU();
+//TODO make standard config
+extern void init_icm(uint8_t Ascale, uint8_t Gscale, uint8_t AODR, uint8_t GODR){
     reset();
     k_sleep(K_MSEC(100));
     uint8_t temp = readByte(ICM42605_ADDRESS, ICM42605_DRIVE_CONFIG);      
@@ -165,14 +175,14 @@ extern void initIMU(struct device *i2c_pointer, uint8_t Ascale, uint8_t Gscale, 
     getGres(Gscale);
 
   k_sleep(K_MSEC(10));
-
+  init_Interrupt_IMU();
 }
 
 static uint8_t readByte(uint8_t i2cAddress, uint8_t subAddress){
     uint8_t read_data;
     uint8_t ret;
-	ret = i2c_write(ICM, &subAddress, 1, i2cAddress);
-	ret = i2c_read(ICM, &read_data, 1, i2cAddress);
+	ret = i2c_write(icm_dev, &subAddress, 1, i2cAddress);
+	ret = i2c_read(icm_dev, &read_data, 1, i2cAddress);
 	return ret;
     
 }
@@ -181,13 +191,13 @@ static uint8_t writeByte(uint8_t devAddr, uint8_t regAddr, uint8_t data){
     uint8_t dataBuffer[2];
 	  dataBuffer[0]=regAddr;
     dataBuffer[1]=data;
-    return i2c_write(ICM, &dataBuffer, 2, devAddr);
+    return i2c_write(icm_dev, &dataBuffer, 2, devAddr);
 }
 
 static uint8_t readBytes(uint8_t address, uint8_t subAddress, uint8_t count, uint8_t * dest){
     uint8_t ret;
-    ret = i2c_write(ICM, &subAddress, 1, address);
-    ret = i2c_read(ICM, dest, count, address);
+    ret = i2c_write(icm_dev, &subAddress, 1, address);
+    ret = i2c_read(icm_dev, dest, count, address);
     return ret;
 }
 
@@ -278,7 +288,7 @@ static uint8_t status()
   return temp;
 }
 
-extern uint8_t setState(bool acc, bool gyr){
+uint8_t setState(bool acc, bool gyr){
     uint8_t temp = readByte(ICM42605_ADDRESS, ICM42605_PWR_MGMT0);
     temp ^= (-acc ^ temp) & (1UL << 0);
     temp ^= (-acc ^ temp) & (1UL << 1);
@@ -286,6 +296,14 @@ extern uint8_t setState(bool acc, bool gyr){
     temp ^= (-gyr ^ temp) & (1UL << 3);
     writeByte(ICM42605_ADDRESS, ICM42605_PWR_MGMT0, temp);
     return 0;    
+}
+
+extern uint8_t sleep_icm(bool SLEEP) {
+	if(SLEEP){
+		return setState(false, false);
+	}else{
+		return setState(true, true);
+	}
 }
 
 static int tickerInterval(uint8_t odr){

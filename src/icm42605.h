@@ -1,15 +1,89 @@
-#ifndef ICM42605_H
-#define ICM42605_H
+#ifndef _ICM42605_H
+#define _ICM42605_H
 #include <stdint.h>
 #include <drivers/i2c.h>
-#include "workQueue.h"
 #include <drivers/gpio.h>
-#include "mahony.h"
-#include "phyphox.h"
+#include <drivers/sensor.h>
+
+#include "sensors.h"
+#include "ble.h"
+
+#define ICM_NODE DT_ALIAS(i2c)
+#if DT_NODE_HAS_STATUS(ICM_NODE, okay)
+const static struct device *icm_dev = DEVICE_DT_GET(ICM_NODE);
+#else
+#error "Node is disabled"
+#endif
 
 #define IMU_INT DT_NODELABEL(button7)
-static struct k_work work_data;
-static struct k_work work_config;
+
+static struct k_work work_icm;
+static struct k_work config_icm;
+
+typedef struct {
+	float ax;
+	float ay;
+	float az;
+	float gx;
+	float gy;
+	float gz;
+	float timestamp;
+    float a_array[4];
+    float g_array[4];
+	uint8_t config[20];
+}ICM; // init values after defines
+
+extern void init_icm(uint8_t Ascale, uint8_t Gscale, uint8_t AODR, uint8_t GODR);
+extern uint8_t sleep_icm(bool SLEEP);
+extern void submit_config_icm();
+
+#define AFS_2G  0x03
+#define AFS_4G  0x02
+#define AFS_8G  0x01
+#define AFS_16G 0x00  // default
+
+#define GFS_2000DPS   0x00 // default
+#define GFS_1000DPS   0x01
+#define GFS_500DPS    0x02
+#define GFS_250DPS    0x03
+#define GFS_125DPS    0x04
+#define GFS_62_5DPS   0x05
+#define GFS_31_25DPS  0x06
+#define GFS_15_125DPS 0x07
+
+#define AODR_8000Hz   0x03
+#define AODR_4000Hz   0x04
+#define AODR_2000Hz   0x05
+#define AODR_1000Hz   0x06 // default
+#define AODR_200Hz    0x07
+#define AODR_100Hz    0x08
+#define AODR_50Hz     0x09
+#define AODR_25Hz     0x0A
+#define AODR_12_5Hz   0x0B
+#define AODR_6_25Hz   0x0C
+#define AODR_3_125Hz  0x0D
+#define AODR_1_5625Hz 0x0E
+#define AODR_500Hz    0x0F
+
+#define GODR_8000Hz  0x03
+#define GODR_4000Hz  0x04
+#define GODR_2000Hz  0x05
+#define GODR_1000Hz  0x06 // default
+#define GODR_200Hz   0x07
+#define GODR_100Hz   0x08
+#define GODR_50Hz    0x09
+#define GODR_25Hz    0x0A
+#define GODR_12_5Hz  0x0B
+#define GODR_500Hz   0x0F
+
+static ICM icm_data = { //init values
+    .config[1] = AFS_2G,
+    .config[2] = AODR_25Hz,
+    .config[3] = GFS_15_125DPS,
+    .config[4] = GODR_25Hz,
+};
+
+//driver
 
 #define ICM42605_DEVICE_CONFIG             0x11
 #define ICM42605_DRIVE_CONFIG              0x13
@@ -131,66 +205,18 @@ static struct k_work work_config;
 
 #define ICM42605_ADDRESS                   0x68
 
-
-#define AFS_2G  0x03
-#define AFS_4G  0x02
-#define AFS_8G  0x01
-#define AFS_16G 0x00  // default
-
-#define GFS_2000DPS   0x00 // default
-#define GFS_1000DPS   0x01
-#define GFS_500DPS    0x02
-#define GFS_250DPS    0x03
-#define GFS_125DPS    0x04
-#define GFS_62_5DPS   0x05
-#define GFS_31_25DPS  0x06
-#define GFS_15_125DPS 0x07
-
-#define AODR_8000Hz   0x03
-#define AODR_4000Hz   0x04
-#define AODR_2000Hz   0x05
-#define AODR_1000Hz   0x06 // default
-#define AODR_200Hz    0x07
-#define AODR_100Hz    0x08
-#define AODR_50Hz     0x09
-#define AODR_25Hz     0x0A
-#define AODR_12_5Hz   0x0B
-#define AODR_6_25Hz   0x0C
-#define AODR_3_125Hz  0x0D
-#define AODR_1_5625Hz 0x0E
-#define AODR_500Hz    0x0F
-
-#define GODR_8000Hz  0x03
-#define GODR_4000Hz  0x04
-#define GODR_2000Hz  0x05
-#define GODR_1000Hz  0x06 // default
-#define GODR_200Hz   0x07
-#define GODR_100Hz   0x08
-#define GODR_50Hz    0x09
-#define GODR_25Hz    0x0A
-#define GODR_12_5Hz  0x0B
-#define GODR_500Hz   0x0F
-
-
 static float oldTime = 0;
-
-static struct device *ICM;
 
 static float getAres(uint8_t Ascale);
 static float getGres(uint8_t Gscale);
 static uint8_t getChipID();
-extern void initIMU(struct device *i2c_pointer, uint8_t Ascale, uint8_t Gscale, uint8_t AODR, uint8_t GODR);
 
-static void offsetBias(float * dest1, float * dest2);
 static void reset();
-static void selfTest();
-static void changeSettings(uint8_t ODR, uint8_t Gscale, uint8_t Ascale);
+static uint8_t status();
 
 static uint8_t readData();
 
-static uint8_t status();
-
-extern uint8_t setState(bool , bool );
+uint8_t setState(bool , bool );
 static float _aRes, _gRes;
 static float ax,ay,az,gx,gy,gz,t = 0;
 static float axOld,ayOld,azOld,gxOld,gyOld,gzOld,tOld = 0;
