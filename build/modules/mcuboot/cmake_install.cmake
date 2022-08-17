@@ -1,4 +1,4 @@
-# Install script for directory: C:/Users/edwar/ncs/v2.0.0/nrf/modules/mcuboot
+# Install script for directory: C:/Users/Dominik/ncs/v2.0.0/nrf/modules/mcuboot
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -34,11 +34,11 @@ endif()
 
 # Set default install directory permissions.
 if(NOT DEFINED CMAKE_OBJDUMP)
-  set(CMAKE_OBJDUMP "C:/Users/edwar/ncs/toolchains/v2.0.0/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump.exe")
+  set(CMAKE_OBJDUMP "C:/Users/Dominik/ncs/toolchains/v2.0.0/opt/zephyr-sdk/arm-zephyr-eabi/bin/arm-zephyr-eabi-objdump.exe")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for the subdirectory.
-  include("F:/Code/sat/phyphox-Satellite/build/modules/mcuboot/boot/bootutil/zephyr/cmake_install.cmake")
+  include("C:/Users/Dominik/Documents/GitHub/phyphox-Satellite/build/modules/mcuboot/boot/bootutil/zephyr/cmake_install.cmake")
 endif()
 
