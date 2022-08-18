@@ -27,7 +27,7 @@ typedef struct {
 	uint8_t config[20];
 }BMP;
 
-static BMP bmp_data;
+extern BMP bmp_data;
 
 static struct sensor_value bmp_press, bmp_temp;
 

@@ -1,5 +1,7 @@
 #include "bmpZephyr.h"
 
+BMP bmp_data;
+
 static BMP3_INTF_RET_TYPE app_i2c_read(uint8_t reg_addr, uint8_t *read_data, uint32_t len, void *intf_ptr) {
 	uint8_t ret;
 	ret = i2c_write(intf_ptr, &reg_addr, 1, BMP384_I2C_ADDR);
@@ -46,12 +48,19 @@ static void bmpDataReady(const struct device *dev, struct gpio_callback *cb,uint
 }
 
 void set_config_bmp(){
-	if (DEBUG){printk("BMP: setting config BMP\n");};
+	if (DEBUG){printk("BMP: setting config BMP to:\n");};
 	uint8_t oversampling = bmp_data.config[1];
 	uint8_t filter = bmp_data.config[2];
 	uint8_t rate = bmp_data.config[3];
 	uint16_t settings_sel;
 
+	if (DEBUG){
+		printk("Enable: %d\n",bmp_data.config[0]);
+		printk("Oversampling: %d\n",oversampling);
+		printk("Filter: %d\n",filter);
+		printk("Rate: %d\n",rate);
+	};
+	
     bmp388_dev.settings.press_en = BMP3_ENABLE;
     bmp388_dev.settings.temp_en = BMP3_ENABLE;
     bmp388_dev.settings.odr_filter.press_os = oversampling;
