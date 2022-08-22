@@ -90,7 +90,8 @@ static void set_config_mlx(){
 		printk("resolution y: %d \n",mlx_data.config[5]);
 		printk("resolution z: %d \n",mlx_data.config[6]);
 	}
-
+	sleep_mlx(true);	//set mlx in sleep mode before changing settings
+	k_sleep(K_MSEC(200));
 	if (!mlx_setGain(mlx_data.config[1], mlx_dev)) {
 		printk("MLX error set Gain\n");
 	}
