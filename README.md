@@ -14,14 +14,18 @@ BMP384
   - [ ] send multiple datasets    
   
 MLX90393ELW-ABA-011-RE
-  - [ ] driver
-  - [ ] data reader interrupt
+  - [x] driver
+  - [x] data reader interrupt
+  - [x] data is send via ble
+  - [ ] sensor can be configured via ble (multiple datasets are missing)   
   - [ ] send multiple datasets  
   
 ICM-42605
   - [ ] driver
   - [ ] data reader interrupt
-  - [ ] send multiple datasets    
+  - [ ] send multiple datasets
+  - [ ] data is send via ble  
+  - [ ] sensor can be configured via ble      
   
 MPRLS0025PA00001A
   - [ ] driver
