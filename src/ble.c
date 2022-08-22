@@ -77,7 +77,7 @@ BT_GATT_SERVICE_DEFINE(phyphox_gatt,
 	BT_GATT_CCC(ccc_cfg_changed,	//notification handler
 		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
 	//MLX
-	/*
+	
 	BT_GATT_CHARACTERISTIC(&mlx_uuid,					
 			       BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
 			       BT_GATT_PERM_READ,
@@ -91,6 +91,7 @@ BT_GATT_SERVICE_DEFINE(phyphox_gatt,
 	BT_GATT_CCC(ccc_cfg_changed,	//notification handler
 		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
 	//SHTC
+	/*
 	BT_GATT_CHARACTERISTIC(&shtc_uuid,					
 			       BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
 			       BT_GATT_PERM_READ,

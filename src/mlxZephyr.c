@@ -1,5 +1,6 @@
 #include "mlxZephyr.h"
 
+MLX mlx_data;
 
 extern int8_t init_mlx(){
     bool err = mlx_init(mlx_dev);
@@ -20,7 +21,7 @@ static void mlx_int1_triggered(const struct device *dev, struct gpio_callback *c
 
 }
 extern void sendDataMLX(){
-    mlx_readData(&mlx_data.x,&mlx_data.y,&mlx_data.z,mlx_dev);
+    mlx_readMeasurement(&mlx_data.x,&mlx_data.y,&mlx_data.z,mlx_dev);
 	if(PRINT_SENSOR_DATA){
     	printk("MLX: x: %f y: %f z: %f \n",mlx_data.x,mlx_data.y,mlx_data.z);
 	}
@@ -79,7 +80,16 @@ extern uint8_t sleep_mlx(bool SLEEP) {
 }
 
 static void set_config_mlx(){
-	if (DEBUG) {printk("MLX Setting config...\n");}
+	if (DEBUG) {
+		printk("MLX Setting config to\n");
+		printk("enable: %d \n",mlx_data.config[0]);
+		printk("gain: %d \n",mlx_data.config[1]);
+		printk("digital filter: %d \n",mlx_data.config[2]);
+		printk("oversampling: %d \n",mlx_data.config[3]);
+		printk("resolution x: %d \n",mlx_data.config[4]);
+		printk("resolution y: %d \n",mlx_data.config[5]);
+		printk("resolution z: %d \n",mlx_data.config[6]);
+	}
 
 	if (!mlx_setGain(mlx_data.config[1], mlx_dev)) {
 		printk("MLX error set Gain\n");

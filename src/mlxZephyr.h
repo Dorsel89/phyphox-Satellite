@@ -30,7 +30,7 @@ typedef struct {
 	uint8_t config[20];
 }MLX;
 
-static MLX mlx_data;
+extern MLX mlx_data;
 
 static struct sensor_value mlx_x,mlx_y,mlx_z;
 
