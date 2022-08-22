@@ -11,14 +11,17 @@ BMP384
   - [x] gpio data ready
   - [x] sensor can be configured via ble
   - [x] data is send via ble
+  - [ ] send multiple datasets    
   
 MLX90393ELW-ABA-011-RE
   - [ ] driver
   - [ ] data reader interrupt
+  - [ ] send multiple datasets  
   
 ICM-42605
   - [ ] driver
   - [ ] data reader interrupt
+  - [ ] send multiple datasets    
   
 MPRLS0025PA00001A
   - [ ] driver
