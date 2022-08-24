@@ -104,25 +104,27 @@ BT_GATT_SERVICE_DEFINE(phyphox_gatt,
 			       NULL, dataWritten, &shtcData.config[0]),
 	BT_GATT_CCC(shtc_config_notification,	//notification handler
 		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
-	//ICM42605 
+	*/
+	//ICM42605
+	
 	BT_GATT_CHARACTERISTIC(&icm_uuid_acc,				
 			       BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
 			       BT_GATT_PERM_READ,
-			       read_u16, NULL, &imu_data.acc_array[0]),
+			       read_u16, NULL, &icm_data.a_array[0]),
 	BT_GATT_CCC(ccc_cfg_changed,
 		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
 	BT_GATT_CHARACTERISTIC(&icm_uuid_gyr,				
 			       BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
 			       BT_GATT_PERM_READ,
-			       read_u16, NULL, &imu_data.gyr_array[0]),
+			       read_u16, NULL, &icm_data.g_array[0]),
 	BT_GATT_CCC(ccc_cfg_changed,
 		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
 	BT_GATT_CHARACTERISTIC(&icm_cnfg,					
 			       BT_GATT_CHRC_WRITE | BT_GATT_CHRC_NOTIFY,
 			       BT_GATT_PERM_WRITE,
-			       NULL, config_submits, &imu_data.config[0]),
+			       NULL, config_submits, &icm_data.config[0]),
 	BT_GATT_CCC(ccc_cfg_changed,
-		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE)*/			
+		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE)		
 );
 
 static const struct bt_data ad[] = {
@@ -174,6 +176,7 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 	sleep_shtc(true);
 	sleep_mpr(true);
 	sleep_mlx(true);
+	sleep_icm(true);
 }
 
 static struct bt_conn_cb conn_callbacks = {

@@ -3,6 +3,8 @@
 static const struct gpio_dt_spec imuInt = GPIO_DT_SPEC_GET_OR(IMU_INT, gpios,{0});
 static struct gpio_callback imuInt_cb_data;
 
+ICM icm_data;
+
 static void sendDataIMU(){
   readData();
   if(PRINT_SENSOR_DATA){
@@ -12,6 +14,15 @@ static void sendDataIMU(){
 
   float timestamp = k_uptime_get() /1000.0;
   icm_data.timestamp = timestamp;
+
+  //this is strange, we should rework this part
+  icm_data.ax = ax;
+  icm_data.ay = ay;
+  icm_data.az = az;
+
+  icm_data.gx = gx;
+  icm_data.gy = gy;
+  icm_data.gz = gz;
 
   icm_data.a_array[0] = icm_data.ax;
 	icm_data.a_array[1] = icm_data.ay;
@@ -23,17 +34,32 @@ static void sendDataIMU(){
 	icm_data.g_array[2] = icm_data.gz;
 	icm_data.g_array[3] = icm_data.timestamp;
 
+  // calling send_data with a rate >=100Hz results in crash TODO
+  send_data(SENSOR_IMU_ACC_ID, &icm_data.a_array, 4*4);
+  send_data(SENSOR_IMU_GYR_ID, &icm_data.g_array, 4*4);
+
+
+  /*  this if statement should not be here?! 
   if(timestamp > oldTime +0.01){
     send_data(SENSOR_IMU_ACC_ID, &icm_data.a_array, 4*4);
     send_data(SENSOR_IMU_GYR_ID, &icm_data.g_array, 4*4);
     oldTime=timestamp;
   }
+  */
 }
 
-//TODO
 static void set_config_icm(){
-  if (DEBUG) {printk("ICM Setting config...\n");}
-
+  if (DEBUG) {
+    printk("ICM Setting config to..\n");
+    printk("Enable: %d\n",icm_data.config[0]);
+    printk("GSCALE: %d\n",icm_data.config[1]);
+    printk("ASCALE: %d\n",icm_data.config[2]);
+    printk("data rate: %d\n",icm_data.config[3]);
+  }
+  //sleep_icm(1); //do we have to disable the sensor first?
+  changeSettings(icm_data.config[3],icm_data.config[1],icm_data.config[2]);
+  k_sleep(K_MSEC(1));
+  sleep_icm(!icm_data.config[0]);
 }
 
 static void imuDataReady(const struct device *dev, struct gpio_callback *cb,uint32_t pins)
@@ -79,6 +105,12 @@ extern void submit_config_icm(){
 
 //TODO make standard config
 extern void init_icm(uint8_t Ascale, uint8_t Gscale, uint8_t AODR, uint8_t GODR){
+
+    icm_data.config[1] = AFS_2G;
+    icm_data.config[2] = AODR_25Hz;
+    icm_data.config[3] = GFS_15_125DPS;
+    icm_data.config[4] = GODR_25Hz;
+
     reset();
     k_sleep(K_MSEC(100));
     uint8_t temp = readByte(ICM42605_ADDRESS, ICM42605_DRIVE_CONFIG);      
@@ -176,6 +208,23 @@ extern void init_icm(uint8_t Ascale, uint8_t Gscale, uint8_t AODR, uint8_t GODR)
 
   k_sleep(K_MSEC(10));
   init_Interrupt_IMU();
+}
+
+static uint8_t changeSettings(uint8_t ODR, uint8_t Gscale, uint8_t Ascale){
+  uint8_t errorCode=0;
+  uint8_t temp;
+  temp = readByte(ICM42605_ADDRESS, ICM42605_ACCEL_CONFIG0);
+  temp = temp & ~(0xEF) ; // set all to 0 
+  errorCode = writeByte(ICM42605_ADDRESS, ICM42605_ACCEL_CONFIG0, temp | ODR | Ascale << 5);
+  
+  if(errorCode){
+    return errorCode;
+  };
+
+  temp = readByte(ICM42605_ADDRESS, ICM42605_GYRO_CONFIG0);
+  temp = temp & ~(0xEF);
+  errorCode = writeByte(ICM42605_ADDRESS, ICM42605_GYRO_CONFIG0, temp | ODR | Gscale << 5);
+  return errorCode;
 }
 
 static uint8_t readByte(uint8_t i2cAddress, uint8_t subAddress){

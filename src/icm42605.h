@@ -76,12 +76,7 @@ extern void submit_config_icm();
 #define GODR_12_5Hz  0x0B
 #define GODR_500Hz   0x0F
 
-static ICM icm_data = { //init values
-    .config[1] = AFS_2G,
-    .config[2] = AODR_25Hz,
-    .config[3] = GFS_15_125DPS,
-    .config[4] = GODR_25Hz,
-};
+extern ICM icm_data;
 
 //driver
 
@@ -225,5 +220,6 @@ static uint8_t readByte(uint8_t i2cAddress, uint8_t subAddress);
 static uint8_t writeByte(uint8_t devAddr, uint8_t regAddr, uint8_t data);
 static uint8_t readBytes(uint8_t address, uint8_t subAddress, uint8_t count, uint8_t * dest);
 
+static uint8_t changeSettings(uint8_t ODR, uint8_t Gscale, uint8_t Ascale);
 
 #endif
