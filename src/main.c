@@ -17,6 +17,7 @@
 #include "icm42605.h"
 #include "shtc3.h"
 #include "mprls.h"
+#include "ds18b20.h"
 
 //#include <nrfx_saadc.h>
 
@@ -40,6 +41,12 @@ void main(void)
 
 	led_off(red_led_dev,0);
 
+	ow_init();
+	k_sleep(K_SECONDS(1));
+	ds18b20_measureTemperature(1);
+	k_sleep(K_SECONDS(3));
+	float temperatur = ds18b20_getTemperature(1);
+	printk("temperatur: %f",temperatur);
 	//ADC
 	/*
 	nrfx_err_t err_code;
