@@ -45,6 +45,9 @@ static ssize_t config_submits(struct bt_conn *conn, const struct bt_gatt_attr *a
 	if(attr->uuid == &icm_cnfg.uuid){
 		submit_config_icm();
 	}
+	if(attr->uuid == &ds18b_cnfg.uuid){
+		submit_config_ds18b20();
+	}
 	return len;
 };
 
@@ -76,8 +79,22 @@ BT_GATT_SERVICE_DEFINE(phyphox_gatt,
 			       NULL, config_submits, &shtc_data.config[0]),
 	BT_GATT_CCC(ccc_cfg_changed,	//notification handler
 		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+
+	//DS18b20			
+	BT_GATT_CHARACTERISTIC(&ds18b_uuid,					
+			       BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
+			       BT_GATT_PERM_READ,
+			       read_u16, NULL, &ds18b20_data.array[0]),
+	BT_GATT_CCC(ccc_cfg_changed,
+		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
+    BT_GATT_CHARACTERISTIC(&ds18b_cnfg,					
+			       BT_GATT_CHRC_WRITE | BT_GATT_CHRC_NOTIFY,
+			       BT_GATT_PERM_WRITE,
+			       NULL, config_submits, &ds18b20_data.config[0]),
+	BT_GATT_CCC(ccc_cfg_changed,	//notification handler
+		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),			
+
 	//MLX
-	
 	BT_GATT_CHARACTERISTIC(&mlx_uuid,					
 			       BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
 			       BT_GATT_PERM_READ,
@@ -213,4 +230,9 @@ extern void send_data(uint8_t ID, float* DATA,uint8_t LEN){
 		bt_gatt_notify_uuid(NULL, &mlx_uuid.uuid,&phyphox_gatt.attrs[0],DATA,LEN);
 		return;
 	}
+	if (ID == SENSOR_DS18B20_ID)
+	{
+		bt_gatt_notify_uuid(NULL, &ds18b_uuid.uuid,&phyphox_gatt.attrs[0],DATA,LEN);
+		return;
+	}	
 };

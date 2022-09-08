@@ -13,7 +13,11 @@
 #define SENSOR_IMU_GYR_ID   3
 #define SENSOR_SHTC_ID      4
 #define SENSOR_MLX_ID       5
+
 #define SENSOR_MPR_ID		6
+#define SENSOR_THERMOCOUPLE_ID 7
+#define SENSOR_DS18B20_ID 8
+
 
 /**
  * @brief Helper function for converting struct sensor_value to float.

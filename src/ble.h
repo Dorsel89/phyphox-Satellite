@@ -20,6 +20,7 @@
 #include "mprls.h"
 #include "mlxZephyr.h"
 #include "icm42605.h"
+#include "ds18b20.h"
 
 static uint8_t phyphox_data[20] = {0};
 static uint8_t config_data[20] = {0};
@@ -42,6 +43,8 @@ static void ccc_cfg_changed(const struct bt_gatt_attr *attr,
 #define SENSOR_MPRLS_NAME			"MPRLS Drucksensor"
 #define SENSOR_MAX31850_NAME		"MAX31850 Temperatursensor"
 #define SENSOR_ADS1231_NAME			"ADS1231 Wägezelle"
+#define SENSOR_DS18B20_NAME			"DS18B20 Temperatursensor"
+#define SENSOR_THERMOCOUPLE_NAME	"Thermocouple Temperatursensor"
 
 static struct bt_uuid_128 data_service_uuid = BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xcddf1001, 0x30f7, 0x4671, 0x8b43, 0x5e40ba53514a));
 //static struct bt_uuid_128 data_characteristic_uuid = BT_UUID_INIT_128(BT_UUID_128_ENCODE(0xcddf0002, 0x30f7, 0x4671, 0x8b43, 0x5e40ba53514a));

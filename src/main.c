@@ -41,12 +41,14 @@ void main(void)
 
 	led_off(red_led_dev,0);
 
-	ow_init();
+	init_ds18b20();
+	/*
 	k_sleep(K_SECONDS(1));
 	ds18b20_measureTemperature(1);
 	k_sleep(K_SECONDS(3));
 	float temperatur = ds18b20_getTemperature(1);
 	printk("temperatur: %f",temperatur);
+	*/
 	//ADC
 	/*
 	nrfx_err_t err_code;

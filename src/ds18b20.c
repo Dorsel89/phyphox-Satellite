@@ -52,39 +52,47 @@
 #define TEMP_11_BIT 0x5F // 11 bit
 #define TEMP_12_BIT 0x7F // 12 bit
 
-typedef uint8_t ScratchPad[9];
+DS18B20 ds18b20_data;
+THERMOCOUPLE thermocouple_data;
 
-uint8_t ds18Count = 0;
-uint8_t tcCount = 0;
+typedef uint8_t ScratchPad[9];
 
 const struct device * dev;
 
-/**@brief Function to init onewire.
- */
-void ow_init(){
- 	DeviceAddress deviceAddress;
+void searchForDevices(){
+    DeviceAddress deviceAddress;
     reset_search();
-    devices = 0;
-    ds18Count = 0;
-    tcCount = 0;
+    
+    ds18b20_data.n_ds18b20 = 0;
+    thermocouple_data.n_thermocouple = 0;
 
     while (search(deviceAddress,true))
     {
-        devices++;
         if(valid_DS18B20(deviceAddress)){
-            memcpy(&ds18b20_Adresses[ds18Count*8],&deviceAddress[0],8);
-            ds18Count++;
+            memcpy(&ds18b20_Adresses[ds18b20_data.n_ds18b20*8],&deviceAddress[0],8);
+            ds18b20_data.n_ds18b20++;
         }
         if (valid_MAX31850(deviceAddress))
         {
-            memcpy(&tc_Adresses[tcCount*8],&deviceAddress[0],8);
-            tcCount++;
+            memcpy(&tc_Adresses[thermocouple_data.n_thermocouple*8],&deviceAddress[0],8);
+            thermocouple_data.n_thermocouple++;
         }
     }
     if(DEBUG){
-        printk("Found %d ds18b20 and %d thermocouple.\n",ds18Count,tcCount);
+        printk("Found %d ds18b20 and %d thermocouple.\n",ds18b20_data.n_ds18b20,thermocouple_data.n_thermocouple);
     }
-    
+}
+
+/**@brief Function to init onewire.
+ */
+void init_ds18b20(){
+    k_work_init(&work_ds18b20_startConversation, ds18b20_measureTemperature);
+    k_work_init(&work_ds18b20_getTemperature, ds18b20_getTemperature);
+
+	k_work_init(&config_work_ds18b20, set_config_ds18b20);
+    k_timer_init(&timer_ds18b20_startConversation, submit_ds18b20_measureTemperature, NULL);
+    k_timer_init(&timer_ds18b20_getTemperature, submit_ds18b20_getTemperature, NULL);
+    searchForDevices();
 }
 
 /**@brief Function to check if device is ds18b20
@@ -328,34 +336,88 @@ uint8_t search(uint8_t *newAddr, bool search_mode /* = true */)
    return search_result;
   }
 
-  float ds18b20_getTemperature(uint8_t deviceNumber){
-    uint8_t dataBuffer[9];   
-    
-    memcpy(&ROM_NO[0],&ds18b20_Adresses[8*(deviceNumber-1)],8);
-    ow_reset();
-    select(ROM_NO);
-    ow_send_byte(0xBE);
+void ds18b20_getTemperature(){
+    // get temperature data from all ds18b20
+    for (int deviceNumber = 0; deviceNumber < ds18b20_data.n_ds18b20 ; deviceNumber++){
+        uint8_t dataBuffer[9];   
+        
+        memcpy(&ROM_NO[0],&ds18b20_Adresses[8*(deviceNumber-1)],8);
+        ow_reset();
+        select(ROM_NO);
+        ow_send_byte(0xBE);
 
-    for (int i=0;i<9;i++){
-        dataBuffer[i]=ow_read_byte();
+        for (int i=0;i<9;i++){
+            dataBuffer[i]=ow_read_byte();
+            }
+        uint16_t buffer[1] = {0};
+        memcpy(&buffer[0], &dataBuffer[0], 2);
+        if(buffer[0]==65535){
+            return 0.0/0.0;
         }
-    uint16_t buffer[1] = {0};
-    memcpy(&buffer[0], &dataBuffer[0], 2);
-    if(buffer[0]==65535){
-        return 0.0/0.0;
+        ds18b20_data.temperature[deviceNumber] = (float)0.0625 * buffer[0];
+        if(PRINT_SENSOR_DATA){
+            printk("temperature of ds18b20 %d: %f\n",deviceNumber,ds18b20_data.temperature[deviceNumber]);
+        }
+        
     }
-
-    return (float)0.0625 * buffer[0];        
-  }
-  void ds18b20_measureTemperature(uint8_t deviceNumber){
+    //send all temperature data
+    ds18b20_data.timestamp = (float)k_uptime_get() /1000.0;
+    ds18b20_data.array[0] = ds18b20_data.timestamp;
+    for (int deviceNumber = 0; deviceNumber < ds18b20_data.n_ds18b20; deviceNumber++){
+        ds18b20_data.array[deviceNumber+1]=ds18b20_data.temperature[deviceNumber];
+    }
+    send_data(SENSOR_DS18B20_ID, &ds18b20_data.array, 4*(1+ds18b20_data.n_ds18b20));
+}
+void ds18b20_measureTemperature(){
+    uint8_t deviceNumber = 1;
     memcpy(&ROM_NO[0],&ds18b20_Adresses[8*(deviceNumber-1)],8);
     ow_reset();
     select(ROM_NO);
     ow_send_byte(0x44);
-  }
+}
 
 void select(const uint8_t rom[8]){
     uint8_t i;
     ow_send_byte(0x55);           // Choose ROM
     for (i = 0; i < 8; i++) ow_send_byte(rom[i]);
+}
+
+extern void sleep_ds18b20(bool sleep){
+    if (sleep) {
+        k_timer_stop(&timer_ds18b20_getTemperature);
+        k_timer_stop(&timer_ds18b20_startConversation);
+    }
+}
+
+void set_config_ds18b20(){
+    if(DEBUG){
+        if(ds18b20_data.config[0]==0){
+            printk("DS18B20: sleep\n");
+        }else{
+            printk("DS18B20: enable\n");
+        }
+    }
+    if(ds18b20_data.config[0]==false){
+        sleep_ds18b20(true);
+        return;
+    }
+    ds18b20_data.timer_interval = ds18b20_data.config[1]*1000; //in ms
+    if(ds18b20_data.config[1]==0){
+        ds18b20_data.timer_interval=760;//go to fastest measurement interval if user choose 0
+    }
+    int conversionTime = 750; //in ms; TODO: change to corrrect timing in respect to selected resolution
+    k_timer_start(&timer_ds18b20_startConversation, K_NO_WAIT, K_MSEC(ds18b20_data.timer_interval));
+    k_timer_start(&timer_ds18b20_getTemperature, K_MSEC(conversionTime), K_MSEC(ds18b20_data.timer_interval));
+}
+
+extern void submit_config_ds18b20(){	
+    k_work_submit(&config_work_ds18b20);
+}
+
+void submit_ds18b20_measureTemperature(){
+	k_work_submit(&work_ds18b20_startConversation);
+}
+
+void submit_ds18b20_getTemperature(){
+	k_work_submit(&work_ds18b20_getTemperature);
 }
