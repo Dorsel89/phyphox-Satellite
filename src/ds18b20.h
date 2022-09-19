@@ -96,6 +96,7 @@ extern void ds18b20_measureTemperature();
 
 void submit_ds18b20_measureTemperature();
 void submit_ds18b20_getTemperature();
+uint8_t dsCRC8(const uint8_t *addr, uint8_t len);
 
 static void select(const uint8_t rom[8]);
 

@@ -38,10 +38,9 @@ void main(void)
 	init_bmp();
 	init_mlx();
 	init_icm(AFS_2G, GFS_15_125DPS, AODR_25Hz, GODR_25Hz);
-
-	led_off(red_led_dev,0);
-
 	init_ds18b20();
+	led_off(red_led_dev,0);
+	
 	/*
 	k_sleep(K_SECONDS(1));
 	ds18b20_measureTemperature(1);

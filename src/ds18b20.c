@@ -92,7 +92,7 @@ void init_ds18b20(){
 	k_work_init(&config_work_ds18b20, set_config_ds18b20);
     k_timer_init(&timer_ds18b20_startConversation, submit_ds18b20_measureTemperature, NULL);
     k_timer_init(&timer_ds18b20_getTemperature, submit_ds18b20_getTemperature, NULL);
-    searchForDevices();
+    //searchForDevices();
 }
 
 /**@brief Function to check if device is ds18b20
@@ -336,28 +336,42 @@ uint8_t search(uint8_t *newAddr, bool search_mode /* = true */)
    return search_result;
   }
 
-void ds18b20_getTemperature(){
+void ds18b20_getTemperature(){  
     // get temperature data from all ds18b20
-    for (int deviceNumber = 0; deviceNumber < ds18b20_data.n_ds18b20 ; deviceNumber++){
+    for(int deviceNumber = 0; deviceNumber < ds18b20_data.n_ds18b20 ; deviceNumber++){
         uint8_t dataBuffer[9];   
         
-        memcpy(&ROM_NO[0],&ds18b20_Adresses[8*(deviceNumber-1)],8);
+        memcpy(&ROM_NO[0],&ds18b20_Adresses[8*deviceNumber],8);
         ow_reset();
         select(ROM_NO);
+
         ow_send_byte(0xBE);
 
         for (int i=0;i<9;i++){
             dataBuffer[i]=ow_read_byte();
             }
+        uint8_t crc_calc = dsCRC8(dataBuffer,8);  
+        if(crc_calc!=dataBuffer[8]){
+            //crc values does not match
+            if(DEBUG){
+                printk("WARNING: DS18B20 CRC do not match: ");
+                printk("crc calculated: %i crc received: %i \n",crc_calc,dataBuffer[8]);
+            }
+            return 0.0/0.0;
+        }  
         uint16_t buffer[1] = {0};
         memcpy(&buffer[0], &dataBuffer[0], 2);
         if(buffer[0]==65535){
+            if (DEBUG){
+                printk("error ds18b20 data");
+            }
             return 0.0/0.0;
         }
         ds18b20_data.temperature[deviceNumber] = (float)0.0625 * buffer[0];
         if(PRINT_SENSOR_DATA){
             printk("temperature of ds18b20 %d: %f\n",deviceNumber,ds18b20_data.temperature[deviceNumber]);
         }
+        k_busy_wait(10);
         
     }
     //send all temperature data
@@ -369,11 +383,13 @@ void ds18b20_getTemperature(){
     send_data(SENSOR_DS18B20_ID, &ds18b20_data.array, 4*(1+ds18b20_data.n_ds18b20));
 }
 void ds18b20_measureTemperature(){
-    uint8_t deviceNumber = 1;
-    memcpy(&ROM_NO[0],&ds18b20_Adresses[8*(deviceNumber-1)],8);
-    ow_reset();
-    select(ROM_NO);
-    ow_send_byte(0x44);
+    for(uint8_t deviceNumber = 0; deviceNumber<ds18b20_data.n_ds18b20;deviceNumber++){
+        memcpy(&ROM_NO[0],&ds18b20_Adresses[8*deviceNumber],8);
+        ow_reset();
+        select(ROM_NO);
+        ow_send_byte(0x44);
+        k_busy_wait(10);
+    }
 }
 
 void select(const uint8_t rom[8]){
@@ -389,7 +405,24 @@ extern void sleep_ds18b20(bool sleep){
     }
 }
 
+uint8_t dsCRC8(const uint8_t *addr, uint8_t len){
+  uint8_t crc = 0;
+  while (len--)
+  {
+    uint8_t inbyte = *addr++;
+    for (uint8_t i = 8; i; i--)
+    {
+      uint8_t mix = (crc ^ inbyte) & 0x01;
+      crc >>= 1;
+      if (mix) crc ^= 0x8C;
+      inbyte >>= 1;
+    }
+  }
+  return crc;
+}
+
 void set_config_ds18b20(){
+    sleep_ds18b20(true);
     if(DEBUG){
         if(ds18b20_data.config[0]==0){
             printk("DS18B20: sleep\n");
@@ -401,11 +434,12 @@ void set_config_ds18b20(){
         sleep_ds18b20(true);
         return;
     }
+    searchForDevices();
     ds18b20_data.timer_interval = ds18b20_data.config[1]*1000; //in ms
     if(ds18b20_data.config[1]==0){
-        ds18b20_data.timer_interval=760;//go to fastest measurement interval if user choose 0
+        ds18b20_data.timer_interval=850;//go to fastest measurement interval if user choose 0
     }
-    int conversionTime = 750; //in ms; TODO: change to corrrect timing in respect to selected resolution
+    int conversionTime = 800; //in ms; TODO: change to corrrect timing in respect to selected resolution
     k_timer_start(&timer_ds18b20_startConversation, K_NO_WAIT, K_MSEC(ds18b20_data.timer_interval));
     k_timer_start(&timer_ds18b20_getTemperature, K_MSEC(conversionTime), K_MSEC(ds18b20_data.timer_interval));
 }
