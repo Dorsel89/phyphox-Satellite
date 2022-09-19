@@ -42,4 +42,5 @@ static void set_config_mlx();
 int8_t init_interrupt_mlx();
 static void mlx_int1_triggered(const struct device *dev, struct gpio_callback *cb,uint32_t pins);
 
+static bool firstSample =false;
 #endif

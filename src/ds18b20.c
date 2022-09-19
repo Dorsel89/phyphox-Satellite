@@ -402,6 +402,9 @@ extern void sleep_ds18b20(bool sleep){
     if (sleep) {
         k_timer_stop(&timer_ds18b20_getTemperature);
         k_timer_stop(&timer_ds18b20_startConversation);
+        if(DEBUG){
+            printk("DS18B20: sleeping\n");
+        }
     }
 }
 

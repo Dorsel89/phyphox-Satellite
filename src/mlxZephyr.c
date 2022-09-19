@@ -22,6 +22,10 @@ static void mlx_int1_triggered(const struct device *dev, struct gpio_callback *c
 }
 extern void sendDataMLX(){
     mlx_readMeasurement(&mlx_data.x,&mlx_data.y,&mlx_data.z,mlx_dev);
+	if(firstSample){
+		firstSample = false;
+		return;
+	}
 	if(PRINT_SENSOR_DATA){
     	printk("MLX: x: %f y: %f z: %f \n",mlx_data.x,mlx_data.y,mlx_data.z);
 	}
@@ -111,7 +115,7 @@ static void set_config_mlx(){
 	if (!mlx_setResolution(MLX90393_Z, mlx_data.config[6], mlx_dev)){
 		printk("MLX error set Z Resolution\n");
 	}
-
+	firstSample= true;
 	sleep_mlx(!mlx_data.config[0]);
 }
 
