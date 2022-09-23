@@ -12,6 +12,7 @@ static struct device *mlx_device_t;
 bool mlx_readData(float *x, float *y, float *z, struct device *mlx_device_t);
 uint8_t startSingleMeasurement(struct device *mlx_device_t);
 uint8_t startBurstMode(struct device *mlx_device_t);
+bool mlx_exitMode(struct device *mlx_device_t);
 bool mlx_readMeasurement(float *x, float *y, float *z, struct device *mlx_device_t);
 bool mlx_exitMode(struct device *mlx_device_t);
 
