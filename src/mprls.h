@@ -22,9 +22,7 @@ typedef struct {
 	uint8_t config[20];
 }MPR;
 
-static MPR mpr_data = { // init values
-    .timer_interval = 5
-};
+extern MPR mpr_data;
 
 static struct sensor_value mpr_press;
 

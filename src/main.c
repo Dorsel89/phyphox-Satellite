@@ -32,6 +32,7 @@ void main(void)
 	led_blink(red_led_dev,0,LED_ON_TIME_MS,LED_SLEEP_TIME_MS); 	// blink led until init done (led_off at the end)
 
 	init_ble();
+	int ret = i2c_configure(device_get_binding("i2c"),I2C_SPEED_SET(I2C_SPEED_FAST));
 
 	init_shtc();
 	init_mpr();

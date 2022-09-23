@@ -24,9 +24,7 @@ typedef struct {
 	uint8_t config[20];
 }SHTC;
 
-static SHTC shtc_data = { // init values
-    .timer_interval = 5
-};
+extern SHTC shtc_data;
 
 static struct sensor_value shtc_temp, shtc_humid;
 

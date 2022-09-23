@@ -2,6 +2,19 @@
 
 MLX mlx_data;
 
+// DATARATE[DIG_Filt][OSR]
+const int MLX_DATARATE[8][4] = {
+    {716,493,303,171},
+	{622,408,241,133},
+	{493,303,171,92},
+	{348,200,108,57},
+	{219,119,62,32},
+	{125,66,34,17},
+	{68,35,18,9},
+    {35,18,9,5}
+};
+
+
 extern int8_t init_mlx(){
     bool err = mlx_init(mlx_dev);
 	init_interrupt_mlx();
@@ -13,6 +26,7 @@ extern int8_t init_mlx(){
 
 static const struct gpio_dt_spec mlx_int1 = GPIO_DT_SPEC_GET_OR(MLX_INT1, gpios,{0});
 static struct gpio_callback mlx_int1_cb_data;
+
 
 static void mlx_int1_triggered(const struct device *dev, struct gpio_callback *cb,uint32_t pins)
 {
@@ -33,12 +47,15 @@ extern void sendDataMLX(){
 	float timestamp = k_uptime_get() /1000.0;
 	mlx_data.timestamp = timestamp;
 
-	mlx_data.array[0] = mlx_data.x;
-	mlx_data.array[1] = mlx_data.y;
-	mlx_data.array[2] = mlx_data.z;
-	mlx_data.array[3] = mlx_data.timestamp;
-
-	send_data(SENSOR_MLX_ID, &mlx_data.array, sizeof(mlx_data.array));
+	mlx_data.array[0+4*mlx_data.measureSamples] = mlx_data.x;
+	mlx_data.array[1+4*mlx_data.measureSamples] = mlx_data.y;
+	mlx_data.array[2+4*mlx_data.measureSamples] = mlx_data.z;
+	mlx_data.array[3+4*mlx_data.measureSamples] = mlx_data.timestamp;
+	mlx_data.measureSamples+=1;
+	if(mlx_data.measureSamples==mlx_data.samplesPerPackage){
+		send_data(SENSOR_MLX_ID, &mlx_data.array, 16*mlx_data.samplesPerPackage);
+		mlx_data.measureSamples=0;
+	}
 }
 
 int8_t init_interrupt_mlx(){
@@ -93,7 +110,20 @@ static void set_config_mlx(){
 		printk("resolution x: %d \n",mlx_data.config[4]);
 		printk("resolution y: %d \n",mlx_data.config[5]);
 		printk("resolution z: %d \n",mlx_data.config[6]);
+		printk("number of samples: %i \n",mlx_data.config[7]);
 	}
+	if(0<mlx_data.config[7]<=MLX90393_MAXSAMPLES){
+    	mlx_data.samplesPerPackage = mlx_data.config[7];
+  	}else{
+    	mlx_data.samplesPerPackage = 1;
+  	}
+	
+	//if the choosen data rate is too high, take more samples per package
+	while(MLX_DATARATE[mlx_data.config[2]][mlx_data.config[3]]>80*mlx_data.samplesPerPackage && mlx_data.samplesPerPackage<MLX90393_MAXSAMPLES){
+		mlx_data.samplesPerPackage +=1;
+	}
+	printk("number of samples set to: %i \n",mlx_data.samplesPerPackage);
+	mlx_data.measureSamples=0;
 	sleep_mlx(true);	//set mlx in sleep mode before changing settings
 	k_sleep(K_MSEC(200));
 	if (!mlx_setGain(mlx_data.config[1], mlx_dev)) {

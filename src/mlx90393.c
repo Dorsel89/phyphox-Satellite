@@ -344,8 +344,6 @@ bool mlx_readMeasurement(float *x, float *y, float *z, struct device *mlx_device
 
   /* Read a single data sample. */
 
-
-  
   if (transceive(tx, sizeof(tx), rx, sizeof(rx), 0, mlx_device_t) != MLX90393_STATUS_OK) {  
     //return false;
   }

@@ -1,5 +1,9 @@
 #include "mprls.h"
 
+MPR mpr_data = { // init values
+    .timer_interval = 5
+};
+
 extern bool init_mpr() 
 {   
     if(!device_is_ready(mpr_dev)){
@@ -22,6 +26,13 @@ extern void sleep_mpr(bool sleep)
     else{
         k_timer_start(&timer_mpr, K_MSEC(mpr_data.timer_interval*10), K_MSEC(mpr_data.timer_interval*10));
     }
+    if(DEBUG){
+        if(sleep){
+            printk("MPRLS: sleep\n");
+        }else{
+            printk("MPRLS: enable\n");
+        }
+    }
 }
 
 void mpr_data_ready()
@@ -34,7 +45,7 @@ void send_data_mpr()
     sensor_sample_fetch(mpr_dev);
     sensor_channel_get(mpr_dev, SENSOR_CHAN_PRESS, &mpr_press);
     
-    mpr_data.pressure = sensor_value_to_float(&mpr_press);
+    mpr_data.pressure = sensor_value_to_float(&mpr_press)*10.0;//get pressure in hPa
 
     float timestamp = k_uptime_get() /1000.0;
     mpr_data.timestamp = timestamp;
@@ -42,9 +53,7 @@ void send_data_mpr()
     mpr_data.array[0] = mpr_data.pressure;
     mpr_data.array[1] = mpr_data.timestamp;
 
-    //printk("%f || %f \n", mpr_data.temperature, mpr_data.humidity);
-
-    send_data(SENSOR_MPR_ID, &mpr_data.array, 4*3);
+    send_data(SENSOR_MPR_ID, &mpr_data.array, 4*2);
 }
 
 void set_config_mpr() 
@@ -53,6 +62,10 @@ void set_config_mpr()
     
     //Ensure minimum of 30ms
     if (mpr_data.timer_interval < 3) {mpr_data.timer_interval = 3;}
+    if(DEBUG){
+        printk("MPRLS: interval: %i \n",mpr_data.timer_interval);
+    }
+    sleep_mpr(!mpr_data.config[0]);
 }
 
 extern void submit_config_mpr()

@@ -8,7 +8,7 @@ static const struct bt_le_adv_param adv_param_normal = {
 
 static const struct bt_le_conn_param conn_paramter = {
 	.interval_min = 6,
-	.interval_max = 12,
+	.interval_max = 200,
 	.latency = 0,
 	.timeout = 10
 };
@@ -42,6 +42,9 @@ static ssize_t config_submits(struct bt_conn *conn, const struct bt_gatt_attr *a
 	}
 	if(attr->uuid == &ds18b_cnfg.uuid){
 		submit_config_ds18b20();
+	}
+	if(attr->uuid == &mprls_cnfg.uuid){
+		submit_config_mpr();
 	}
 	return len;
 };
@@ -102,21 +105,20 @@ BT_GATT_SERVICE_DEFINE(phyphox_gatt,
 			       NULL, config_submits, &mlx_data.config[0]),
 	BT_GATT_CCC(ccc_cfg_changed,	//notification handler
 		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
-	//SHTC
-	/*
-	BT_GATT_CHARACTERISTIC(&shtc_uuid,					
+	//MPRLS
+	BT_GATT_CHARACTERISTIC(&mprls_uuid,					
 			       BT_GATT_CHRC_READ | BT_GATT_CHRC_NOTIFY,
 			       BT_GATT_PERM_READ,
-			       read_u16, NULL, &shtcData.array[0]),
+			       read_u16, NULL, &mpr_data.array[0]),
 	BT_GATT_CCC(ccc_cfg_changed,
 		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
-    BT_GATT_CHARACTERISTIC(&shtc_cnfg,					
+    BT_GATT_CHARACTERISTIC(&mprls_cnfg,					
 			       BT_GATT_CHRC_WRITE | BT_GATT_CHRC_NOTIFY,
 			       BT_GATT_PERM_WRITE,
-			       NULL, dataWritten, &shtcData.config[0]),
-	BT_GATT_CCC(shtc_config_notification,	//notification handler
+			       NULL, config_submits, &mpr_data.config[0]),
+	BT_GATT_CCC(ccc_cfg_changed,	//notification handler
 		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE),
-	*/
+	
 	//ICM42605
 	
 	BT_GATT_CHARACTERISTIC(&icm_uuid_acc,				
@@ -190,11 +192,47 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 	sleep_mlx(true);
 	sleep_icm(true);
 	sleep_ds18b20(true);
+	sleep_mpr(true);
 }
+static void le_param_updated(struct bt_conn *conn, uint16_t interval,
+			     uint16_t latency, uint16_t timeout){
+	printk("Connection parameters updated.\n"
+	       " interval: %d, latency: %d, timeout: %d\n",
+	       interval, latency, timeout);
+}
+static void le_phy_updated(struct bt_conn *conn,struct bt_conn_le_phy_info *param){
+	if(DEBUG){
+		printk("LE PHY updated\n");
+	}
+}
+static bool le_param_req(struct bt_conn *conn, struct bt_le_conn_param *param){
+	if(DEBUG){
+		printk("Connection parameters update request received.\n");
+		printk("Minimum interval: %d, Maximum interval: %d\n",
+	       param->interval_min, param->interval_max);
+		printk("Latency: %d, Timeout: %d\n", param->latency, param->timeout);
+	}	
+	return true;
+}
+static void le_data_len_updated(struct bt_conn *conn, struct bt_conn_le_data_len_info *info)
+{
+    char addr[BT_ADDR_LE_STR_LEN];
 
+    bt_addr_le_to_str(bt_conn_get_dst(conn), addr, sizeof(addr));
+	if(DEBUG){
+		printk("Data length updated: %s max tx %u (%u us) max rx %u (%u us)\n",
+           addr, info->tx_max_len, info->tx_max_time, info->rx_max_len,
+           info->rx_max_time);
+		   }
+}
 static struct bt_conn_cb conn_callbacks = {
 	.connected = connected,
 	.disconnected = disconnected,
+	.le_param_req = le_param_req,
+	.le_param_updated = le_param_updated,
+	.le_phy_updated = le_phy_updated,
+	.le_data_len_updated = le_data_len_updated,
+
 };
 
 void init_ble(){
@@ -230,5 +268,10 @@ extern void send_data(uint8_t ID, float* DATA,uint8_t LEN){
 	{
 		bt_gatt_notify_uuid(NULL, &ds18b_uuid.uuid,&phyphox_gatt.attrs[0],DATA,LEN);
 		return;
-	}	
+	}
+	if (ID == SENSOR_MPR_ID)
+	{
+		bt_gatt_notify_uuid(NULL, &mprls_uuid.uuid,&phyphox_gatt.attrs[0],DATA,LEN);
+		return;
+	}		
 };

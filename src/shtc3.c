@@ -1,4 +1,5 @@
 #include "shtc3.h"
+SHTC shtc_data;
 
 extern bool init_shtc() 
 {   
@@ -6,7 +7,7 @@ extern bool init_shtc()
         printk("Device not ready or not found");
         return false;
     }
-
+    shtc_data.timer_interval = 3;
     k_work_init(&work_shtc, send_data_shtc);
 	k_work_init(&config_work_shtc, set_config_shtc);
     k_timer_init(&timer_shtc, shtc_data_ready, NULL);
@@ -40,7 +41,6 @@ void send_data_shtc()
 
     float timestamp = k_uptime_get() /1000.0;
     shtc_data.timestamp = timestamp;
-
     shtc_data.array[0] = shtc_data.temperature;
     shtc_data.array[1] = shtc_data.humidity;
     shtc_data.array[2] = shtc_data.timestamp;
@@ -52,10 +52,13 @@ void send_data_shtc()
 
 void set_config_shtc() 
 {
+    sleep_shtc(true);
     shtc_data.timer_interval = shtc_data.config[1];
-    
+    printk("SHTC3 config received \n");
+    printk("SHTC3 interval: %i\n",shtc_data.timer_interval);
     //Ensure minimum of 30ms
     if (shtc_data.timer_interval < 3) {shtc_data.timer_interval = 3;}
+    sleep_shtc(!shtc_data.config[0]);
 }
 
 extern void submit_config_shtc()

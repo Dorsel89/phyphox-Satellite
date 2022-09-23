@@ -16,11 +16,13 @@ const static struct device *icm_dev = DEVICE_DT_GET(ICM_NODE);
 #endif
 
 #define IMU_INT DT_NODELABEL(button7)
-
+#define ICM420605_MAXSAMPLES 11
 static struct k_work work_icm;
 static struct k_work config_icm;
 
 typedef struct {
+	int samplesPerPackage;
+	int measureSamples;
 	float ax;
 	float ay;
 	float az;
@@ -28,8 +30,8 @@ typedef struct {
 	float gy;
 	float gz;
 	float timestamp;
-    float a_array[4];
-    float g_array[4];
+    float a_array[4*ICM420605_MAXSAMPLES];
+    float g_array[4*ICM420605_MAXSAMPLES];
 	uint8_t config[20];
 }ICM; // init values after defines
 
