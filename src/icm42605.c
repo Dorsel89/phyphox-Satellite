@@ -1,40 +1,90 @@
 #include "icm42605.h"
 
-static struct device *ICM;
-
 static const struct gpio_dt_spec imuInt = GPIO_DT_SPEC_GET_OR(IMU_INT, gpios,{0});
 static struct gpio_callback imuInt_cb_data;
 
+ICM icm_data;
+
 static void sendDataIMU(){
-//  printk("send data \n");
-  readData();
-  //printk("x: %f y: %f z: %f \n",ax,ay,az);
-  //float pitch,roll,yaw;
-  //MahonyAHRSupdateIMU(gx,gy,gz,ax,ay,az,&pitch,&roll,&yaw,0.04);
-  //printk("pitch: %f roll: %f yaw: %f \n",pitch,roll,yaw);
+  if(readData() && DEBUG){
+    printk("ERROR: ICM42605 data read\n");
+    return;
+  }
+  if(PRINT_SENSOR_DATA){
+    	printk("ICM_A: x: %f y: %f z: %f \n",ax,ay,az);
+      printk("ICM_G: x: %f y: %f z: %f \n",gx,gy,gz);
+	}
+
   float timestamp = k_uptime_get() /1000.0;
-  imuData.timestamp = timestamp;
-  float myArray[4] = {ax,ay,az,timestamp};
+  icm_data.timestamp = timestamp;
+
+  //this is strange, we should rework this part
+  icm_data.ax = ax;
+  icm_data.ay = ay;
+  icm_data.az = az;
+
+  icm_data.gx = gx;
+  icm_data.gy = gy;
+  icm_data.gz = gz;
+
+  icm_data.a_array[0+4*icm_data.measureSamples] = icm_data.ax;
+	icm_data.a_array[1+4*icm_data.measureSamples] = icm_data.ay;
+	icm_data.a_array[2+4*icm_data.measureSamples] = icm_data.az;
+	icm_data.a_array[3+4*icm_data.measureSamples] = icm_data.timestamp;
+
+  icm_data.g_array[0+4*icm_data.measureSamples] = icm_data.gx;
+	icm_data.g_array[1+4*icm_data.measureSamples] = icm_data.gy;
+	icm_data.g_array[2+4*icm_data.measureSamples] = icm_data.gz;
+	icm_data.g_array[3+4*icm_data.measureSamples] = icm_data.timestamp;
+
+  // calling send_data with a rate >=100Hz results in crash TODO
+  icm_data.measureSamples+=1;
+	if(icm_data.measureSamples==icm_data.samplesPerPackage){
+    send_data(SENSOR_IMU_ACC_ID, &icm_data.a_array, 16*icm_data.samplesPerPackage);
+    send_data(SENSOR_IMU_GYR_ID, &icm_data.g_array, 16*icm_data.samplesPerPackage);
+    icm_data.measureSamples=0;
+  }
+
+  /*  this if statement should not be here?! 
   if(timestamp > oldTime +0.01){
-    sendData(SENSOR_IMU_ACC_ID, &myArray, 4*4);
+    send_data(SENSOR_IMU_ACC_ID, &icm_data.a_array, 4*4);
+    send_data(SENSOR_IMU_GYR_ID, &icm_data.g_array, 4*4);
     oldTime=timestamp;
   }
-	
+  */
 }
-static void setConfigIMU(){
-  printk("config received \n");
+
+static void set_config_icm(){
+  if (DEBUG) {
+    printk("ICM Setting config to..\n");
+    printk("Enable: %d\n",icm_data.config[0]);
+    printk("GSCALE: %d\n",icm_data.config[1]);
+    printk("ASCALE: %d\n",icm_data.config[2]);
+    printk("data rate: %d\n",icm_data.config[3]);
+    printk("number of samples in package: %i\n",icm_data.config[4]);
+  }
+  if(0<icm_data.config[4]<=ICM420605_MAXSAMPLES){
+    icm_data.samplesPerPackage = icm_data.config[4];
+  }else{
+    icm_data.samplesPerPackage = 1;
+  }
+	icm_data.measureSamples=0;
+  sleep_icm(1); 
+  changeSettings(icm_data.config[3],icm_data.config[1],icm_data.config[2]);
+  k_sleep(K_MSEC(1));
+  sleep_icm(!icm_data.config[0]);
 }
 
 static void imuDataReady(const struct device *dev, struct gpio_callback *cb,uint32_t pins)
 {
-	k_work_submit(&work_data);
+	k_work_submit(&work_icm);
 }
 
 int8_t init_Interrupt_IMU(){
     int8_t returnValue;
 
-	k_work_init(&work_data, sendDataIMU);
-	k_work_init(&work_config, setConfigIMU);
+	k_work_init(&work_icm, sendDataIMU);
+	k_work_init(&config_icm, set_config_icm);
 
     if (!device_is_ready(imuInt.port)) {
 		printk("Error: imu interrupt %s is not ready\n",
@@ -61,14 +111,19 @@ int8_t init_Interrupt_IMU(){
 	printk("Set up IMU at %s pin %d\n", imuInt.port->name, imuInt.pin);
   return returnValue;
 }
-extern void submitConfigIMU(){
-	k_work_submit(&work_config);
+
+extern void submit_config_icm(){
+	k_work_submit(&config_icm);
 };
-extern void initIMU(struct device *i2c_pointer, uint8_t Ascale, uint8_t Gscale, uint8_t AODR, uint8_t GODR){
 
-    ICM = i2c_pointer;
+//TODO make standard config
+extern void init_icm(uint8_t Ascale, uint8_t Gscale, uint8_t AODR, uint8_t GODR){
 
-    init_Interrupt_IMU();
+    icm_data.config[1] = AFS_2G;
+    icm_data.config[2] = AODR_25Hz;
+    icm_data.config[3] = GFS_15_125DPS;
+    icm_data.config[4] = GODR_25Hz;
+
     reset();
     k_sleep(K_MSEC(100));
     uint8_t temp = readByte(ICM42605_ADDRESS, ICM42605_DRIVE_CONFIG);      
@@ -165,36 +220,56 @@ extern void initIMU(struct device *i2c_pointer, uint8_t Ascale, uint8_t Gscale, 
     getGres(Gscale);
 
   k_sleep(K_MSEC(10));
+  init_Interrupt_IMU();
+}
 
+static uint8_t changeSettings(uint8_t ODR, uint8_t Gscale, uint8_t Ascale){
+  uint8_t errorCode=0;
+  uint8_t temp;
+  temp = readByte(ICM42605_ADDRESS, ICM42605_ACCEL_CONFIG0);
+  temp = temp & ~(0xEF) ; // set all to 0 
+  errorCode = writeByte(ICM42605_ADDRESS, ICM42605_ACCEL_CONFIG0, temp | ODR | Ascale << 5);
+  
+  if(errorCode){
+    return errorCode;
+  };
+
+  temp = readByte(ICM42605_ADDRESS, ICM42605_GYRO_CONFIG0);
+  temp = temp & ~(0xEF);
+  errorCode = writeByte(ICM42605_ADDRESS, ICM42605_GYRO_CONFIG0, temp | ODR | Gscale << 5);
+  return errorCode;
 }
 
 static uint8_t readByte(uint8_t i2cAddress, uint8_t subAddress){
-    uint8_t read_data;
-    uint8_t ret;
-	ret = i2c_write(ICM, &subAddress, 1, i2cAddress);
-	ret = i2c_read(ICM, &read_data, 1, i2cAddress);
-	return ret;
+  uint8_t read_data;
+  uint8_t ret;
     
+	//ret = i2c_write(icm_dev, &subAddress, 1, i2cAddress);
+	//ret = i2c_read(icm_dev, &read_data, 1, i2cAddress);
+
+  ret = i2c_reg_read_byte(icm_dev,i2cAddress,subAddress,&read_data);
+  return ret;  
 }
 
 static uint8_t writeByte(uint8_t devAddr, uint8_t regAddr, uint8_t data){
     uint8_t dataBuffer[2];
 	  dataBuffer[0]=regAddr;
     dataBuffer[1]=data;
-    return i2c_write(ICM, &dataBuffer, 2, devAddr);
+    return i2c_write(icm_dev, &dataBuffer, 2, devAddr);
 }
 
 static uint8_t readBytes(uint8_t address, uint8_t subAddress, uint8_t count, uint8_t * dest){
     uint8_t ret;
-    ret = i2c_write(ICM, &subAddress, 1, address);
-    ret = i2c_read(ICM, dest, count, address);
-    return ret;
+    ret = i2c_burst_read(icm_dev,address,subAddress,dest,count);
+    if(ret){
+      printk("i2c_burst_read issue: %i \n",ret);
+    }
+    return ret;    
 }
 
 static uint8_t getChipID()
 {
-  uint8_t c = readByte(ICM42605_ADDRESS, ICM42605_WHO_AM_I);
-  return c;
+  return readByte(ICM42605_ADDRESS, ICM42605_WHO_AM_I);
 }
 
 static float getAres(uint8_t Ascale) {
@@ -273,12 +348,11 @@ static void reset()
 
 static uint8_t status()
 {
-  // reset device
   uint8_t temp = readByte(ICM42605_ADDRESS, ICM42605_INT_STATUS);
   return temp;
 }
 
-extern uint8_t setState(bool acc, bool gyr){
+uint8_t setState(bool acc, bool gyr){
     uint8_t temp = readByte(ICM42605_ADDRESS, ICM42605_PWR_MGMT0);
     temp ^= (-acc ^ temp) & (1UL << 0);
     temp ^= (-acc ^ temp) & (1UL << 1);
@@ -286,6 +360,14 @@ extern uint8_t setState(bool acc, bool gyr){
     temp ^= (-gyr ^ temp) & (1UL << 3);
     writeByte(ICM42605_ADDRESS, ICM42605_PWR_MGMT0, temp);
     return 0;    
+}
+
+extern uint8_t sleep_icm(bool SLEEP) {
+	if(SLEEP){
+		return setState(false, false);
+	}else{
+		return setState(true, true);
+	}
 }
 
 static int tickerInterval(uint8_t odr){
@@ -319,6 +401,20 @@ static uint8_t readData()
     if(error){
         return error;
     }
+    uint8_t rawData_COPY[14];
+    error = readBytes(ICM42605_ADDRESS, ICM42605_TEMP_DATA1, 14, &rawData_COPY[0]);
+    if(error){
+        return error;
+    }
+    for(int i=0;i<14;i++){
+      if(rawData_COPY[i] != rawData[i]){
+        if(DEBUG){
+          printk("different result on second read");
+        }
+        return error;
+      }
+    }
+
     int16_t destination[7];
 
     destination[0] = ((int16_t)rawData[0] << 8) | rawData[1] ;  // Turn the MSB and LSB into a signed 16-bit value
@@ -343,10 +439,11 @@ static uint8_t readData()
     gx = destination[4] *_gRes;
     gy = destination[5] *_gRes;
     gz = destination[6] *_gRes;
-
+  /*
     if(rawData[2] == 0xFF && rawData[3] == 0xFF && rawData[4] == 0xFF && rawData[5] == 0xFF && rawData[6] == 0xFF && rawData[7] == 0xFF && rawData[8] == 0xFF && rawData[9] == 0xFF && rawData[10] == 0xFF && rawData[11] == 0xFF && rawData[12] == 0xFF && rawData[13] == 0xFF){
-        error = 1;        
+        error = 1;      
     }
+    */
 
     return error;
 }

@@ -7,78 +7,48 @@
 #include <zephyr.h>
 #include <sys/printk.h>
 #include <stddef.h>
-#include <sys/printk.h>
 #include <sys/util.h>
 #include <zephyr/types.h>
-#include <drivers/i2c.h>
-#include "workQueue.h"
+
+#include "led.h"
 #include "bmpZephyr.h"
 #include "ble.h"
 #include "mlxZephyr.h"
-#include "phyphox.h"
 #include "icm42605.h"
 #include "shtc3.h"
-#include <nrfx_saadc.h>
+#include "mprls.h"
+#include "ds18b20.h"
 
-#include "waermelehre/ds18b20.h"
-#include "waermelehre/ds18b20_sensor.h"
+//#include <nrfx_saadc.h>
 
-//#include "debug.h"
+//#include "waermelehre/ds18b20.h"
+//#include "waermelehre/ds18b20_sensor.h"
+
 #define SLEEP_TIME_MS	1
-
-
-
-#define I2C_DEV DT_LABEL(DT_NODELABEL(myi2c))
-
-int8_t error =0;
-void btn1_handle(struct k_work * work) {
-    printk("test");
-}
-
-//ADC
-nrfx_saadc_channel_t channel = NRFX_SAADC_DEFAULT_CHANNEL_SE(NRF_SAADC_INPUT_AIN1, 0);
-
-static void handle_error(nrfx_err_t error_code)
-{
-    if (error_code!= NRFX_SUCCESS)
-    {
-        // error
-        while(1){};
-    }
-}
 
 void main(void)
 {
 	printk("Hello World %s\n", CONFIG_BOARD);
+	led_blink(red_led_dev,0,LED_ON_TIME_MS,LED_SLEEP_TIME_MS); 	// blink led until init done (led_off at the end)
 
-	uint16_t counter =0;
-	
-	//k_work_init(&some_work, btn1_handle);
-	
+	init_ble();
+	int ret = i2c_configure(device_get_binding("i2c"),I2C_SPEED_SET(I2C_SPEED_FAST));
 
-	struct device *i2c_dev;
-	i2c_dev = device_get_binding("myi2c");
-	if (!i2c_dev) {
-		printk("I2C: Device driver not found.\n");
-		return;
-	}
+	init_shtc();
+	init_mpr();
+	init_bmp();
+	init_mlx();
+	init_icm(AFS_2G, GFS_15_125DPS, AODR_25Hz, GODR_25Hz);
+	init_ds18b20();
+	led_off(red_led_dev,0);
 	
-	error = init_Interrupt_BMP();
-	error = initBMP384(i2c_dev);
-
-	initMLX(i2c_dev);
-	init_Interrupt_MLX();
+	/*
 	k_sleep(K_SECONDS(1));
-	//enableMLX(i2c_dev);
-
-	initBLE();
-	printk("start imu\n");
-	initIMU(i2c_dev,AFS_2G, GFS_15_125DPS, AODR_25Hz, GODR_25Hz);
-	setState(0,0); //disable 0,0 enable 1,1
+	ds18b20_measureTemperature(1);
 	k_sleep(K_SECONDS(3));
-	//printk("start shtc\n");
-	//initSHTC(i2c_dev);
-
+	float temperatur = ds18b20_getTemperature(1);
+	printk("temperatur: %f",temperatur);
+	*/
 	//ADC
 	/*
 	nrfx_err_t err_code;
@@ -138,14 +108,4 @@ float fTemp1, fTemp2;
 		printk("The temperature is now : \n%d from method 1\n%d from method 2\n%d from method 3\n\n", (int)fTemp1, (int)fTemp2, iTemp);
 	}
 	*/
-
-	k_sleep(K_SECONDS(1));
-	disableMLX(i2c_dev);
-	k_sleep(K_SECONDS(2));
-	printk("enable mlx\n");
-	enableMLX(i2c_dev);
-	k_sleep(K_SECONDS(3));
-	printk("disable mlx\n");
-	disableMLX(i2c_dev);
-	
 }

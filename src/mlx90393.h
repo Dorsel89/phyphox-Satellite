@@ -3,7 +3,7 @@
 
 #include <zephyr/types.h>
 #include <drivers/i2c.h>
-#include "phyphox.h"
+#include "sensors.h"
 
 //#include <sys/util.h>
 
@@ -14,6 +14,7 @@ uint8_t startSingleMeasurement(struct device *mlx_device_t);
 uint8_t startBurstMode(struct device *mlx_device_t);
 bool mlx_exitMode(struct device *mlx_device_t);
 bool mlx_readMeasurement(float *x, float *y, float *z, struct device *mlx_device_t);
+bool mlx_exitMode(struct device *mlx_device_t);
 
 #define MLX90393_DEFAULT_ADDR (0x0C) /* Can also be 0x18, depending on IC */
 
