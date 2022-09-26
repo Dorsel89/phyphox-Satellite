@@ -18,6 +18,7 @@
 #include "shtc3.h"
 #include "mprls.h"
 #include "ds18b20.h"
+#include "ads1231.h"
 
 //#include <nrfx_saadc.h>
 
@@ -41,71 +42,16 @@ void main(void)
 	init_icm(AFS_2G, GFS_15_125DPS, AODR_25Hz, GODR_25Hz);
 	init_ds18b20();
 	led_off(red_led_dev,0);
-	
-	/*
-	k_sleep(K_SECONDS(1));
-	ds18b20_measureTemperature(1);
-	k_sleep(K_SECONDS(3));
-	float temperatur = ds18b20_getTemperature(1);
-	printk("temperatur: %f",temperatur);
-	*/
-	//ADC
-	/*
-	nrfx_err_t err_code;
- 
-    nrf_saadc_value_t sample;
-	
-    err_code = nrfx_saadc_init(NRFX_SAADC_DEFAULT_CONFIG_IRQ_PRIORITY);
-    handle_error(err_code);
- 
-    err_code = nrfx_saadc_channels_config(&channel, 1);
-    handle_error(err_code);
- 
-    err_code = nrfx_saadc_simple_mode_set((1<<0),
-                                          NRF_SAADC_RESOLUTION_10BIT,
-                                          NRF_SAADC_OVERSAMPLE_DISABLED,
-                                          NULL);
-    handle_error(err_code);
-	err_code = nrfx_saadc_buffer_set(&sample, 1);
-    handle_error(err_code);
-	while (0)
-    {
-        err_code = nrfx_saadc_mode_trigger();
-        handle_error(err_code);
-        printk("sample %d", sample);
-        NRFX_DELAY_US(1000000);
- 
-    }
-	*/
 
-//------------DS18B20---------------------
-/*
-float fTemp1, fTemp2;
-	int iTemp;
-
-	ds18b20_setResolution(12);
-
-	fTemp1 = ds18b20_get_temp();	// Method 1 (from sd18b20.c)
-	k_sleep(K_SECONDS(1));
-*/
-	//fTemp2 = ds18b20_get_temp_method_2();	// Method 2 (from sd18b20.c)
-	//k_sleep(K_SECONDS(1));
-
-	//iTemp = read_temperature();		// Metohd 3 (from sensor.c)
-	
-	//k_sleep(K_SECONDS(1));
-/*
-	printk("Hello World! %s\nTemperature is :\n%d from method 1\n%d from method 2\n%d from method 3\n\n", CONFIG_BOARD, (int)fTemp1, (int)fTemp2, iTemp);
-
-	while (1)
+	//loadcell test
+	init_ads1231();
+	sleep_ads1231(false);
+	while (true)
 	{
-		k_sleep(K_SECONDS(10));
-
-		fTemp1 = ds18b20_get_temp();
-		fTemp2 = ds18b20_get_temp();
-		iTemp = read_temperature();
-
-		printk("The temperature is now : \n%d from method 1\n%d from method 2\n%d from method 3\n\n", (int)fTemp1, (int)fTemp2, iTemp);
+		long weight_raw = read_loadcell();
+		long weight = 433*(weight_raw-46000)/(-144100-46000);
+		printk("loadcell value raw : %ld calc %ld\n ",weight_raw,weight);
+		k_sleep(K_MSEC(120));
 	}
-	*/
+	
 }
