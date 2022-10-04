@@ -77,6 +77,7 @@ void searchForDevices(){
             memcpy(&tc_Adresses[thermocouple_data.n_thermocouple*8],&deviceAddress[0],8);
             thermocouple_data.n_thermocouple++;
         }
+        
     }
     if(DEBUG){
         printk("Found %d ds18b20 and %d thermocouple.\n",ds18b20_data.n_ds18b20,thermocouple_data.n_thermocouple);
@@ -437,7 +438,20 @@ void set_config_ds18b20(){
         sleep_ds18b20(true);
         return;
     }
-    searchForDevices();
+    if(ds18b20_data.config[2]>=2){
+        //SHOULD BE FIXED
+        //do max 5 searches to find target number of probes
+        for(int i=0;i<5;i++){
+            searchForDevices();
+            if(ds18b20_data.n_ds18b20==ds18b20_data.config[2]){
+                break;
+            }
+        }
+
+    }else{
+        searchForDevices();
+    }
+    
     ds18b20_data.timer_interval = ds18b20_data.config[1]*1000; //in ms
     if(ds18b20_data.config[1]==0){
         ds18b20_data.timer_interval=850;//go to fastest measurement interval if user choose 0

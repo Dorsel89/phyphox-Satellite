@@ -41,10 +41,12 @@ void main(void)
 	init_mlx();
 	init_icm(AFS_2G, GFS_15_125DPS, AODR_25Hz, GODR_25Hz);
 	init_ds18b20();
+	init_ads1231();
 	led_off(red_led_dev,0);
 
 	//loadcell test
-	init_ads1231();
+	
+	/*
 	sleep_ads1231(false);
 	while (true)
 	{
@@ -53,5 +55,5 @@ void main(void)
 		printk("loadcell value raw : %ld calc %ld\n ",weight_raw,weight);
 		k_sleep(K_MSEC(120));
 	}
-	
+	*/
 }

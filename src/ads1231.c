@@ -10,6 +10,7 @@ void init_ads1231(){
     gpio_pin_configure(dev_ADS1231, PWDN_PIN, GPIO_OUTPUT);
     gpio_pin_configure(dev_ADS1231, SPEED_PIN, GPIO_OUTPUT);
     gpio_pin_configure(dev_ADS1231, DOUT_PIN, GPIO_INPUT);
+    sleep_ads1231(true);
 }
 
 void sleep_ads1231(bool sleep){
