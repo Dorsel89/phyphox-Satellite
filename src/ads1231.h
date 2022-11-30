@@ -10,6 +10,10 @@
 #define PWDN_PIN 31
 
 typedef struct {
+	long offset;
+	long calibrationWeight;
+	long unweighted;
+	long weighted;
 	float weight;
 	float timestamp;
 	float array[2];

@@ -20,6 +20,10 @@
 #include "ds18b20.h"
 #include "ads1231.h"
 
+//#include <mgmt/mcumgr/smp_bt.h>
+//#include "os_mgmt/os_mgmt.h"
+//#include "img_mgmt/img_mgmt.h"
+
 //#include <nrfx_saadc.h>
 
 //#include "waermelehre/ds18b20.h"
@@ -29,6 +33,18 @@
 
 void main(void)
 {
+	/*
+	int err;
+	printk("build time: " __DATE__ " " __TIME__ "\n");
+	os_mgmt_register_group();
+	img_mgmt_register_group();
+	err = smp_bt_register();
+
+	if (err) {
+	printk("SMP BT register failed (err: %d)", err);
+	}
+	*/
+	
 	printk("Hello World %s\n", CONFIG_BOARD);
 	led_blink(red_led_dev,0,LED_ON_TIME_MS,LED_SLEEP_TIME_MS); 	// blink led until init done (led_off at the end)
 
@@ -43,17 +59,29 @@ void main(void)
 	init_ds18b20();
 	init_ads1231();
 	led_off(red_led_dev,0);
-
-	//loadcell test
-	
 	/*
-	sleep_ads1231(false);
-	while (true)
-	{
-		long weight_raw = read_loadcell();
-		long weight = 433*(weight_raw-46000)/(-144100-46000);
-		printk("loadcell value raw : %ld calc %ld\n ",weight_raw,weight);
-		k_sleep(K_MSEC(120));
+	while (true){
+		float test = AnalogRead(2);
+		printk("voltage value: %f\n ",test);
+		k_sleep(K_MSEC(1000));
+		
 	}
 	*/
+	//loadcell test
+	/*
+	sleep_ads1231(false);
+	
+	while (true)
+	{
+		float weight;
+		long weight_raw;
+
+		weight_raw = read_loadcell();
+		weight = ads1231_data.calibrationWeight*(weight_raw-ads1231_data.unweighted)*1.0/(ads1231_data.weighted-ads1231_data.unweighted);
+
+		printk("loadcell value raw : %ld calc %ld\n ",weight_raw,weight);
+		k_sleep(K_MSEC(1000));
+	}
+	*/
+	
 }

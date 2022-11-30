@@ -35,7 +35,9 @@ static void mlx_int1_triggered(const struct device *dev, struct gpio_callback *c
 
 }
 extern void sendDataMLX(){
-    mlx_readMeasurement(&mlx_data.x,&mlx_data.y,&mlx_data.z,mlx_dev);
+	//mlx_readMeasurement(&mlx_data.x,&mlx_data.y,&mlx_data.z,mlx_dev);
+    mlx_readMeasurement(&mlx_data.x,&mlx_data.z,&mlx_data.y,mlx_dev);
+	mlx_data.z = -1*mlx_data.z;
 	if(firstSample){
 		firstSample = false;
 		return;

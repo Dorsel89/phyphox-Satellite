@@ -15,6 +15,7 @@
 		i2c = &i2c0;
 		blue-led = &led0;
 		red-led = &led1;
+		measure-battery = &led2;
 		shtc-3 = &shtc3_node;
 		mpr-ls = &mprls_node;
 	 };
@@ -40,6 +41,10 @@
 			 gpios = <&gpio0 28 GPIO_ACTIVE_HIGH>;
 			 label = "Red LED";
 		 };
+		 led2: led_2 {
+			gpios = <&gpio0 22 GPIO_ACTIVE_HIGH>;
+			label = "Measure Battery";
+		};		 
 	 };
  
  
@@ -84,7 +89,7 @@
 		 button9: button_9 {
 			 gpios = <&gpio0 4 (GPIO_ACTIVE_HIGH)>;
 			 label = "supercap";
-		 };				
+		 };	 				
 	 };
  };
 
