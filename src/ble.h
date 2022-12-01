@@ -1,5 +1,6 @@
 #ifndef _BLE_H   /* Include guard */
 #define _BLE_H
+#include <zephyr/toolchain.h>
 
 #include <zephyr.h>
 #include <drivers/gpio.h>
