@@ -26,7 +26,7 @@ extern void send_data_bmp(void){
 		printk("BMP: pressure: %f temp: %f\n", myData.pressure,myData.temperature);
 	}
 
-	bmp_data.pressure = myData.pressure;
+	bmp_data.pressure = myData.pressure*0.01;
 	bmp_data.temperature = myData.temperature;
 	
 	float timestamp = k_uptime_get() /1000.0;
@@ -48,9 +48,13 @@ static void bmpDataReady(const struct device *dev, struct gpio_callback *cb,uint
 }
 
 void set_config_bmp(){
+	
 	if (DEBUG){printk("BMP: setting config BMP to:\n");};
 	uint8_t oversampling = bmp_data.config[1];
 	uint8_t filter = bmp_data.config[2];
+	if(filter == 0){
+		filter = 1;
+	}
 	uint8_t rate = bmp_data.config[3];
 	uint16_t settings_sel;
 

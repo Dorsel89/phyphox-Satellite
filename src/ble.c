@@ -193,6 +193,7 @@ static void disconnected(struct bt_conn *conn, uint8_t reason)
 	sleep_icm(true);
 	sleep_ds18b20(true);
 	sleep_mpr(true);
+	sys_reboot();
 }
 static void le_param_updated(struct bt_conn *conn, uint16_t interval,
 			     uint16_t latency, uint16_t timeout){

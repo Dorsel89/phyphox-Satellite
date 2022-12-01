@@ -5,7 +5,7 @@
 #include <devicetree.h>
 #include <drivers/sensor.h>
 
-#define DEBUG				false
+#define DEBUG				true
 #define PRINT_SENSOR_DATA 	false
 
 #define SENSOR_BMP384_ID    1

@@ -11,21 +11,23 @@ static void sendDataIMU(){
     return;
   }
   if(PRINT_SENSOR_DATA){
-    	printk("ICM_A: x: %f y: %f z: %f \n",ax,ay,az);
-      printk("ICM_G: x: %f y: %f z: %f \n",gx,gy,gz);
+    	//printk("ICM_A: x: %f y: %f z: %f \n",ax,ay,az);
+      //printk("ICM_G: x: %f y: %f z: %f \n",gx,gy,gz);
+      printk("ICM_A: x: %f y: %f z: %f \n",-ay,az,-ax);
+      printk("ICM_G: x: %f y: %f z: %f \n",-gy,gz,-gx);
 	}
 
   float timestamp = k_uptime_get() /1000.0;
   icm_data.timestamp = timestamp;
 
   //this is strange, we should rework this part
-  icm_data.ax = ax;
-  icm_data.ay = ay;
-  icm_data.az = az;
+  icm_data.ax = -ay*9.807;
+  icm_data.ay = az*9.807;
+  icm_data.az = -ax*9.807;
 
-  icm_data.gx = gx;
-  icm_data.gy = gy;
-  icm_data.gz = gz;
+  icm_data.gx = -gy;
+  icm_data.gy = -gz;
+  icm_data.gz = -gx;
 
   icm_data.a_array[0+4*icm_data.measureSamples] = icm_data.ax;
 	icm_data.a_array[1+4*icm_data.measureSamples] = icm_data.ay;
@@ -69,7 +71,9 @@ static void set_config_icm(){
     icm_data.samplesPerPackage = 1;
   }
 	icm_data.measureSamples=0;
-  sleep_icm(1); 
+  sleep_icm(1);
+  _aRes = getAres(icm_data.config[2]); 
+  _gRes = getGres(icm_data.config[1]);
   changeSettings(icm_data.config[3],icm_data.config[1],icm_data.config[2]);
   k_sleep(K_MSEC(1));
   sleep_icm(!icm_data.config[0]);
