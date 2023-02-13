@@ -20,9 +20,9 @@
 #include "ds18b20.h"
 #include "ads1231.h"
 
-//#include <mgmt/mcumgr/smp_bt.h>
-//#include "os_mgmt/os_mgmt.h"
-//#include "img_mgmt/img_mgmt.h"
+#include <mgmt/mcumgr/smp_bt.h>
+#include "os_mgmt/os_mgmt.h"
+#include "img_mgmt/img_mgmt.h"
 
 //#include <nrfx_saadc.h>
 
@@ -33,7 +33,7 @@
 
 void main(void)
 {
-	/*
+	
 	int err;
 	printk("build time: " __DATE__ " " __TIME__ "\n");
 	os_mgmt_register_group();
@@ -43,7 +43,7 @@ void main(void)
 	if (err) {
 	printk("SMP BT register failed (err: %d)", err);
 	}
-	*/
+	
 	
 	printk("Hello World %s\n", CONFIG_BOARD);
 	led_blink(red_led_dev,0,LED_ON_TIME_MS,LED_SLEEP_TIME_MS); 	// blink led until init done (led_off at the end)
