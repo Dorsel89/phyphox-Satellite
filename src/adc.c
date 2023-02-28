@@ -1,16 +1,19 @@
 #include "adc.h"
 
+const struct device *adc_dev;
+
+#define ADC_DEVICE_NAME		DT_LABEL(DT_ALIAS(adcctrl))
+#define ADC_RESOLUTION		10
+#define ADC_GAIN			ADC_GAIN_1_6
+#define ADC_REFERENCE		ADC_REF_INTERNAL
+#define ADC_ACQUISITION_TIME	ADC_ACQ_TIME(ADC_ACQ_TIME_MICROSECONDS, 40)
+#define BUFFER_SIZE			6
+
 static bool _IsInitialized = false;
 static uint8_t _LastChannel = 250;
 static int16_t m_sample_buffer[BUFFER_SIZE];
 
-void init_BAS(){
-    led_on(measure_battery_dev,0);
-};
-
-void measure_battery_level(){
-    //TODO
-};
+int myChannel = 0;
 
 // the channel configuration with channel not yet filled in
 static struct adc_channel_cfg m_1st_channel_cfg = {
@@ -24,13 +27,12 @@ static struct adc_channel_cfg m_1st_channel_cfg = {
 #endif
 };
 
-// return device* for the adc
 static const struct device* getAdcDevice(void)
 {
-	return measure_battery_dev;
+	return device_get_binding(ADC_DEVICE_NAME);
 }
 
-// initialize the adc channel
+
 static const struct device* init_adc(int channel)
 {
 	int ret;
@@ -97,9 +99,9 @@ static int16_t readOneChannel(int channel)
 // ------------------------------------------------
 // high level read adc channel and convert to float voltage
 // ------------------------------------------------
-float AnalogRead(int channel)
+extern void AnalogRead()
 {
-
+	int channel = myChannel;
 	int16_t sv = readOneChannel(channel);
 	if(sv == BAD_ANALOG_READ)
 	{
@@ -133,3 +135,13 @@ float AnalogRead(int channel)
 	float fout = (sv * 3.6 / multip);
 	return fout;
 }
+
+void init_BAS(){
+    led_off(measure_battery_dev,0);	
+
+	init_adc(myChannel);
+};
+
+void measure_battery_level(){
+    //TODO
+};

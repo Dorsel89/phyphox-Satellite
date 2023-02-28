@@ -140,6 +140,7 @@ BT_GATT_SERVICE_DEFINE(phyphox_gatt,
 	BT_GATT_CCC(ccc_cfg_changed,
 		    BT_GATT_PERM_READ | BT_GATT_PERM_WRITE)		
 );
+// PRIMARY ADVERTISING DATA
 
 static const struct bt_data ad[] = {
 	BT_DATA_BYTES(BT_DATA_FLAGS, (BT_LE_AD_GENERAL | BT_LE_AD_NO_BREDR)),
@@ -148,8 +149,13 @@ static const struct bt_data ad[] = {
 		BT_UUID_16_ENCODE(BT_UUID_ESS_VAL)),//general sensor service
 	BT_DATA_BYTES(BT_DATA_UUID128_ALL, 
 		BT_UUID_128_ENCODE(0xcddf1001, 0x30f7, 0x4671, 0x8b43, 0x5e40ba53514a))
-		//BT_UUID_128_ENCODE(0xcddf1002, 0x30f7, 0x4671, 0x8b43, 0x5e40ba53514a), 
-		//BT_UUID_128_ENCODE(0xcddf1003, 0x30f7, 0x4671, 0x8b43, 0x5e40ba53514a))
+};
+
+// SCAN RESPONSE DATA
+static const struct bt_data sd[] = {
+BT_DATA_BYTES(BT_DATA_UUID128_ALL,
+		      0x84, 0xaa, 0x60, 0x74, 0x52, 0x8a, 0x8b, 0x86,
+		      0xd3, 0x4c, 0xb7, 0x1d, 0x1d, 0xdc, 0x53, 0x8d),
 };
 
 static void bt_ready(void)
@@ -157,8 +163,8 @@ static void bt_ready(void)
 	int err;
 
 	printk("Bluetooth initialized\n");
-
-	err = bt_le_adv_start(&adv_param_normal, ad, ARRAY_SIZE(ad), NULL, 0);
+	bt_set_name("Satellite test");
+	err = bt_le_adv_start(&adv_param_normal, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
 	if (err) {
 		printk("Advertising failed to start (err %d)\n", err);
 		return;
@@ -179,13 +185,13 @@ static void connected(struct bt_conn *conn, uint8_t err)
 	}
 
 	led_blink_times(blue_led_dev,3);
-	k_timer_start(&timer_bas,K_SECONDS(1),K_SECONDS(1));
+	//k_timer_start(&timer_bas,K_SECONDS(1),K_SECONDS(1));
 }
 
 static void disconnected(struct bt_conn *conn, uint8_t reason)
 {
 	printk("Disconnected (reason 0x%02x)\n", reason);
-	k_timer_stop(&timer_bas);
+	//k_timer_stop(&timer_bas);
 	sleep_bmp(true);
 	sleep_shtc(true);
 	sleep_mpr(true);

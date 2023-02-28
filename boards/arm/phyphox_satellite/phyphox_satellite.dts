@@ -18,6 +18,7 @@
 		measure-battery = &led2;
 		shtc-3 = &shtc3_node;
 		mpr-ls = &mprls_node;
+		adcctrl = &adc;
 	 };
  
 	 chosen {
@@ -85,11 +86,7 @@
 		 button8: button_8 {
 			 gpios = <&gpio0 16 (GPIO_ACTIVE_HIGH)>;
 			 label = "imu int 2";
-		 };
-		 button9: button_9 {
-			 gpios = <&gpio0 4 (GPIO_ACTIVE_HIGH)>;
-			 label = "supercap";
-		 };	 				
+		 }; 				
 	 };
  };
 
