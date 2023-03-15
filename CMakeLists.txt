@@ -7,7 +7,7 @@ list(APPEND BOARD_ROOT ${CMAKE_CURRENT_SOURCE_DIR})
 find_package(Zephyr REQUIRED HINTS $ENV{ZEPHYR_BASE})
 project(phyphox_satellite)
 
-target_sources(app PRIVATE src/adc.c)
+target_sources(app PRIVATE src/bas.c)
 target_sources(app PRIVATE src/mprls.c)
 target_sources(app PRIVATE src/sensors.h)
 target_sources(app PRIVATE src/led.c)

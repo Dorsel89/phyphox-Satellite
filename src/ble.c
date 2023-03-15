@@ -155,9 +155,7 @@ static const struct bt_data ad[] = {
 static void bt_ready(void)
 {
 	int err;
-
 	printk("Bluetooth initialized\n");
-
 	err = bt_le_adv_start(&adv_param_normal, ad, ARRAY_SIZE(ad), NULL, 0);
 	if (err) {
 		printk("Advertising failed to start (err %d)\n", err);
@@ -241,7 +239,9 @@ void init_ble(){
 	bt_ready();
 	bt_conn_cb_register(&conn_callbacks);
 };
-
+extern void set_supercap_level(uint8_t val){
+	bt_bas_set_battery_level(val);
+}
 extern void send_data(uint8_t ID, float* DATA,uint8_t LEN){
 	if(ID == SENSOR_IMU_ACC_ID){
 		bt_gatt_notify_uuid(NULL, &icm_uuid_acc.uuid,&phyphox_gatt.attrs[0],DATA,LEN);

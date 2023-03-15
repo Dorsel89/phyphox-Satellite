@@ -59,14 +59,8 @@ void main(void)
 	init_ds18b20();
 	init_ads1231();
 	led_off(red_led_dev,0);
-	/*
-	while (true){
-		float test = AnalogRead(2);
-		printk("voltage value: %f\n ",test);
-		k_sleep(K_MSEC(1000));
-		
-	}
-	*/
+	init_BAS();
+	
 	//loadcell test
 	/*
 	sleep_ads1231(false);

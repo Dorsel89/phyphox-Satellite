@@ -14,7 +14,7 @@
 #include <sys/byteorder.h>
 
 #include "led.h"
-#include "adc.h"
+#include "bas.h"
 
 #include "bmpZephyr.h"
 #include "shtc3.h"
@@ -28,6 +28,7 @@ static uint8_t config_data[20] = {0};
 
 void init_ble();
 void send_data(uint8_t ID, float* DATA,uint8_t LEN);
+extern void set_supercap_level(uint8_t val);
 
 static bool notify_enabled;
 static void ccc_cfg_changed(const struct bt_gatt_attr *attr,
