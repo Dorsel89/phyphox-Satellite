@@ -1,11 +1,16 @@
 #ifndef _LED_H
 #define _LED_H
 
-#include <device.h>
-#include <devicetree.h>
-#include <drivers/led.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/led.h>
+#include <zephyr/kernel.h>
 
 void led_blink_times(const struct device* led, uint8_t times);
+static struct k_timer timer_led_on;
+static struct k_timer timer_led_off;
+static uint8_t blink_count;
+static uint8_t blink_n_times;
 
 /* 1000 msec = 1 sec */
 #define LED_ON_TIME_MS      300

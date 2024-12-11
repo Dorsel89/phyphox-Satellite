@@ -1,9 +1,9 @@
 #ifndef _ICM42605_H
 #define _ICM42605_H
 #include <stdint.h>
-#include <drivers/i2c.h>
-#include <drivers/gpio.h>
-#include <drivers/sensor.h>
+#include <zephyr/drivers/i2c.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/sensor.h>
 
 #include "sensors.h"
 #include "ble.h"

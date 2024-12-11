@@ -1,7 +1,9 @@
 #include "ble.h"
 
+char name[20];
+
 static const struct bt_le_adv_param adv_param_normal = {
-	.options = BT_LE_ADV_OPT_CONNECTABLE | BT_LE_ADV_OPT_USE_NAME,
+	.options = BT_LE_ADV_OPT_CONNECTABLE,
 	.interval_min = BT_GAP_ADV_SLOW_INT_MIN,
 	.interval_max = BT_GAP_ADV_SLOW_INT_MAX,
 };
@@ -27,7 +29,6 @@ static ssize_t config_submits(struct bt_conn *conn, const struct bt_gatt_attr *a
 		return BT_GATT_ERR(BT_ATT_ERR_INVALID_OFFSET);
 	}
 	memcpy(value + offset, buf, len);
-	
 	if(attr->uuid == &bmp_cnfg.uuid){
 		submit_config_bmp();
 	}
@@ -151,12 +152,33 @@ static const struct bt_data ad[] = {
 		//BT_UUID_128_ENCODE(0xcddf1002, 0x30f7, 0x4671, 0x8b43, 0x5e40ba53514a), 
 		//BT_UUID_128_ENCODE(0xcddf1003, 0x30f7, 0x4671, 0x8b43, 0x5e40ba53514a))
 };
-
+// SCAN RESPONSE DATA
+static const struct bt_data sd[] = {
+/*
+BT_DATA_BYTES(BT_DATA_UUID128_ALL,
+		      0x84, 0xaa, 0x60, 0x74, 0x52, 0x8a, 0x8b, 0x86,
+		      0xd3, 0x4c, 0xb7, 0x1d, 0x1d, 0xdc, 0x53, 0x8d),
+*/
+BT_DATA(BT_DATA_NAME_COMPLETE, name, 20),			  
+};
 static void bt_ready(void)
 {
 	int err;
 	printk("Bluetooth initialized\n");
-	err = bt_le_adv_start(&adv_param_normal, ad, ARRAY_SIZE(ad), NULL, 0);
+
+	uint16_t serialNumber[1];
+	memcpy(&serialNumber[0], (uint8_t *)0x10001080, 2);
+
+	if(serialNumber[0]==0x00 || serialNumber[0]==0xffff){
+		serialNumber[0]=0;
+	}
+	printk("number: %i \r\n",serialNumber[0]);
+	sprintf(name, "Satellite S%d\n", serialNumber[0]);
+
+	//bt_set_name(name);
+	
+
+	err = bt_le_adv_start(&adv_param_normal, ad, ARRAY_SIZE(ad), sd, ARRAY_SIZE(sd));
 	if (err) {
 		printk("Advertising failed to start (err %d)\n", err);
 		return;

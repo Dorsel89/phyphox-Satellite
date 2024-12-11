@@ -1,5 +1,5 @@
 #include "ads1231.h"
-#include <drivers/gpio.h>
+#include <zephyr/drivers/gpio.h>
 
 ADS1231 ads1231_data = {
                         .offset = 0,

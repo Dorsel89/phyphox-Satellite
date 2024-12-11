@@ -47,9 +47,9 @@ extern void init_BAS(){
 	//led_on(measure_battery_dev,0);
 	
 	int err = 0;
-	adc_dev = device_get_binding(ADC_DEVICE_NAME);
+	adc_dev = DEVICE_DT_GET(DT_NODELABEL(adc));
 	if (!adc_dev) {
-        printk("device_get_binding ADC_0 (=%s) failed\n", ADC_DEVICE_NAME);
+        printk("device_get_binding adc \n");
     }
 	err = adc_channel_setup(adc_dev, &m_1st_channel_cfg);
     if (err) {

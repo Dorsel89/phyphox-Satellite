@@ -2,7 +2,7 @@
 #define _MLX90393_H
 
 #include <zephyr/types.h>
-#include <drivers/i2c.h>
+#include <zephyr/drivers/i2c.h>
 #include "sensors.h"
 
 //#include <sys/util.h>

@@ -47,9 +47,9 @@ static void bmpDataReady(const struct device *dev, struct gpio_callback *cb,uint
 	k_work_submit(&work_bmp);
 }
 
-void set_config_bmp(){
-	
+static void set_config_bmp(){
 	if (DEBUG){printk("BMP: setting config BMP to:\n");};
+
 	uint8_t oversampling = bmp_data.config[1];
 	uint8_t filter = bmp_data.config[2];
 	if(filter == 0){
@@ -102,8 +102,6 @@ int8_t init_Interrupt_BMP(){
 
     int8_t returnValue;
 
-	k_work_init(&work_bmp, send_data_bmp);
-	k_work_init(&config_work_bmp, set_config_bmp);
 
     if (!device_is_ready(bmpInt.port)) {
 		printk("Error: bmp interrupt %s is not ready\n",
@@ -176,6 +174,9 @@ extern bool init_bmp(){
 	}
 
 	bmpResult = sleep_bmp(true);
+	
+	k_work_init(&work_bmp, send_data_bmp);
+	k_work_init(&config_work_bmp, set_config_bmp);
 
 	init_Interrupt_BMP();
 }

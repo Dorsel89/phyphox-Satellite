@@ -1,9 +1,9 @@
 #ifndef _BAS_H   /* Include guard */
 #define _BAS_H
 
-#include <drivers/led.h>
-#include <device.h>
-#include <devicetree.h>
+#include <zephyr/drivers/led.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
 #include <zephyr/drivers/adc.h>
 #include <hal/nrf_saadc.h>
 #include <math.h>

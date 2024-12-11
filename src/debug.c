@@ -21,7 +21,7 @@ void console_init(void)
 	/* Poll if the DTR flag was set, optional */
 	while (!dtr) {
 		uart_line_ctrl_get(dev, UART_LINE_CTRL_DTR, &dtr);
-		k_msleep(250); // Let other tasks run if no terminal is connected to USB
+		k_sleep(MSEC(250)); // Let other tasks run if no terminal is connected to USB
 	}
 
 	if (strlen(CONFIG_UART_CONSOLE_ON_DEV_NAME) != strlen("CDC_ACM_0") ||
@@ -32,6 +32,6 @@ void console_init(void)
 	}
 
 	while (1) {
-		k_msleep(20000);
+		k_sleep(MSEC(20000));
 	}
 }

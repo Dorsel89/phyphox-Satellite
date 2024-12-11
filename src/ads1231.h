@@ -1,7 +1,7 @@
 #ifndef _ADS1231_H
 #define _ADS1231_H
 
-#include <zephyr.h>
+#include <zephyr/zephyr.h>
 #include "sensors.h"
 
 #define SCL_PIN 21

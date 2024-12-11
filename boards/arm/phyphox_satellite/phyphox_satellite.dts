@@ -93,11 +93,28 @@
 	 };
  };
 
+ &pinctrl {
+    i2c0_default: i2c0_default {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SDA, 0, 14)>, <NRF_PSEL(TWIM_SCL, 0, 13)>;
+		};
+	};
+    i2c0_sleep: i2c0_sleep {
+		group1 {
+			psels = <NRF_PSEL(TWIM_SDA, 0, 14)>, <NRF_PSEL(TWIM_SCL, 0, 13)>;
+		};
+	};
+};
+
+
  i2c_0: &i2c0 {
     compatible = "nordic,nrf-twim";
     status = "okay";
-    sda-pin = < 14 >;
-    scl-pin = < 13 >;
+    //sda-pin = < 14 >;
+    //scl-pin = < 13 >;
+	pinctrl-0 = <&i2c0_default>;
+	pinctrl-1 = <&i2c0_sleep>;
+	pinctrl-names = "default", "sleep";
     label = "i2c";
     clock-frequency = <I2C_BITRATE_STANDARD>; 
 
@@ -134,12 +151,14 @@
  
  &uart0 {
 	 compatible = "nordic,nrf-uarte";
-	 status = "okay";
+	 status = "disabled";
+	 /*
 	 current-speed = <115200>;
 	 tx-pin = <6>;
 	 rx-pin = <8>;
 	 rts-pin = <5>;
 	 cts-pin = <7>;
+	 */
  };
  
  &flash0 {
@@ -150,35 +169,22 @@
 		 #size-cells = <1>;
  
 		 boot_partition: partition@0 {
-			 label = "mcuboot";
-			 reg = <0x000000000 0xc000>;
-		 };
-		 slot0_partition: partition@c000 {
-			 label = "image-0";
-			 reg = <0x0000C000 0x32000>;
-		 };
-		 slot1_partition: partition@3e000 {
-			 label = "image-1";
-			 reg = <0x0003E000 0x32000>;
-		 };
-		 scratch_partition: partition@da000 {
-			 label = "image-scratch";
-			 reg = <0x000da000 0x0001e000>;
-		 };
+			label = "mcuboot";
+			reg = <0x00000000 0xC000>;
+		};
+		slot0_partition: partition@c000 {
+			label = "image-0";
+			reg = <0x0000C000 0x37000>;
+		};
+		slot1_partition: partition@43000 {
+			label = "image-1";
+			reg = <0x00043000 0x37000>;
+		};
+		storage_partition: partition@7a000 {
+			label = "storage";
+			reg = <0x0007A000 0x00006000>;
+		};
  
-		 /*
-		  * The flash starting at 0x000f8000 and ending at
-		  * 0x000fffff is reserved for use by the application.
-		  */
- 
-		 /*
-		  * Storage partition will be used by FCB/LittleFS/NVS
-		  * if enabled.
-		  */
-		 storage_partition: partition@f8000 {
-			 label = "storage";
-			 reg = <0x000f8000 0x00008000>;
-		 };
 	 };
  };
  

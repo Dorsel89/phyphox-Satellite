@@ -1,9 +1,9 @@
 #ifndef MPRLS_H
 #define MPRLS_H
 
-#include <device.h>
-#include <devicetree.h>
-#include <drivers/sensor.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/sensor.h>
 
 #include "sensors.h"
 

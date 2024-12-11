@@ -1,9 +1,9 @@
 #ifndef SHTC3_H
 #define SHTC3_H
 
-#include <device.h>
-#include <devicetree.h>
-#include <drivers/sensor.h>
+#include <zephyr/device.h>
+#include <zephyr/devicetree.h>
+#include <zephyr/drivers/sensor.h>
 
 #include "sensors.h"
 #include "ble.h"

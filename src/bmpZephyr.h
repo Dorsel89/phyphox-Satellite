@@ -1,16 +1,16 @@
 #ifndef _BMPZEPHYR_H
 #define _BMPZEPHYR_H
 
-#include <zephyr.h>
+#include <zephyr/kernel.h>
 #include <stdint.h>
 #include "bmp3.h"
 #include "bmp3_defs.h"
-#include <drivers/i2c.h>
-#include <drivers/gpio.h>
-#include <drivers/sensor.h>
+#include <zephyr/drivers/i2c.h>
+#include <zephyr/drivers/gpio.h>
+#include <zephyr/drivers/sensor.h>
 
 #include "sensors.h"
-#include "ble.h"
+//#include "ble.h"
 
 #define BMP_NODE DT_ALIAS(i2c)
 #if DT_NODE_HAS_STATUS(BMP_NODE, okay)

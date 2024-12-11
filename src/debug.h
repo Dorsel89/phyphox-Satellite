@@ -10,7 +10,7 @@
 #ifndef _DEBUG_H_
 #define _DEBUG_H_
 
-#include <drivers/uart.h>
+#include <zephyr/drivers/uart.h>
 #include <usb/usb_device.h>
 
 // Size of stack area used by each thread

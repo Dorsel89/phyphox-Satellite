@@ -4,10 +4,10 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-#include <zephyr.h>
-#include <sys/printk.h>
+#include <zephyr/zephyr.h>
+#include <zephyr/sys/printk.h>
 #include <stddef.h>
-#include <sys/util.h>
+#include <zephyr/sys/util.h>
 #include <zephyr/types.h>
 
 #include "led.h"
@@ -20,32 +20,14 @@
 #include "ds18b20.h"
 #include "ads1231.h"
 
-#include <mgmt/mcumgr/smp_bt.h>
-#include "os_mgmt/os_mgmt.h"
-#include "img_mgmt/img_mgmt.h"
-
-//#include <nrfx_saadc.h>
-
-//#include "waermelehre/ds18b20.h"
-//#include "waermelehre/ds18b20_sensor.h"
-
 #define SLEEP_TIME_MS	1
 
+//Toolchain/SDK 2.7
 void main(void)
 {
 	
-	int err;
-	printk("build time: " __DATE__ " " __TIME__ "\n");
-	os_mgmt_register_group();
-	img_mgmt_register_group();
-	err = smp_bt_register();
-
-	if (err) {
-	printk("SMP BT register failed (err: %d)", err);
-	}
-	
-	
 	printk("Hello World %s\n", CONFIG_BOARD);
+	init_led();
 	led_blink(red_led_dev,0,LED_ON_TIME_MS,LED_SLEEP_TIME_MS); 	// blink led until init done (led_off at the end)
 
 	init_ble();
@@ -57,11 +39,13 @@ void main(void)
 	init_mlx();
 	init_icm(AFS_2G, GFS_15_125DPS, AODR_25Hz, GODR_25Hz);
 	init_ds18b20();
-	init_ads1231();
+	//init_ads1231();
 	led_off(red_led_dev,0);
 	init_BAS();
 	
+
 	//loadcell test
+
 	/*
 	sleep_ads1231(false);
 	
